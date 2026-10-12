@@ -1,0 +1,16 @@
+single_barrier  N= 20 tanh_lr3e-3_6k       val_loss=3.68e-06 best_epoch= 1549 [ref rmse_T=1.9e-03] 6s
+single_barrier  N= 20 tanh_lr1e-2_20k      val_loss=1.89e-07 best_epoch= 3076 [ref rmse_T=6.6e-04] 9s
+single_barrier  N= 20 silu_lr1e-2_20k      val_loss=3.37e-08 best_epoch= 6350 [ref rmse_T=3.0e-04] 16s
+single_barrier  N= 20 tanh128_lr1e-2_20k   val_loss=3.14e-07 best_epoch= 3092 [ref rmse_T=5.1e-04] 11s
+single_barrier  N= 80 tanh_lr3e-3_6k       val_loss=9.97e-07 best_epoch= 6000 [ref rmse_T=2.9e-04] 15s
+single_barrier  N= 80 tanh_lr1e-2_20k      val_loss=1.51e-06 best_epoch= 4238 [ref rmse_T=3.4e-04] 13s
+single_barrier  N= 80 silu_lr1e-2_20k      val_loss=7.62e-08 best_epoch=20000 [ref rmse_T=1.5e-04] 45s
+single_barrier  N= 80 tanh128_lr1e-2_20k   val_loss=2.83e-07 best_epoch= 5274 [ref rmse_T=1.8e-04] 20s
+double_barrier  N= 20 tanh_lr3e-3_6k       val_loss=2.71e-01 best_epoch= 2773 [ref rmse_T=9.5e-02] 8s
+double_barrier  N= 20 tanh_lr1e-2_20k      val_loss=2.71e-01 best_epoch= 1743 [ref rmse_T=9.1e-02] 6s
+double_barrier  N= 20 silu_lr1e-2_20k      val_loss=1.26e-01 best_epoch=  546 [ref rmse_T=9.6e-02] 4s
+double_barrier  N= 20 tanh128_lr1e-2_20k   val_loss=1.33e-01 best_epoch=  997 [ref rmse_T=9.1e-02] 7s
+double_barrier  N= 80 tanh_lr3e-3_6k       val_loss=5.09e-01 best_epoch= 1730 [ref rmse_T=4.7e-02] 6s
+double_barrier  N= 80 tanh_lr1e-2_20k      val_loss=5.49e-01 best_epoch= 5576 [ref rmse_T=4.2e-02] 15s
+double_barrier  N= 80 silu_lr1e-2_20k      val_loss=5.21e-01 best_epoch= 6736 [ref rmse_T=4.7e-02] 18s
+double_barrier  N= 80 tanh128_lr1e-2_20k   val_loss=3.50e-01 best_epoch= 6901 [ref rmse_T=4.0e-02] 25s

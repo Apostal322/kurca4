@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qscatter"
+version = "0.1.0"
+description = "Surrogate models for accelerating parametric computations in 1D quantum scattering"
+requires-python = ">=3.10"
+dependencies = ["numpy", "scipy", "matplotlib", "scikit-learn", "torch"]
+
+[tool.setuptools.packages.find]
+include = ["qscatter*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
