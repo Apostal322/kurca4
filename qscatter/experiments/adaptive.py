@@ -179,7 +179,7 @@ class Exp2Config:
     mlp_ensemble_max: int = 160
     random_seeds: tuple = (0, 1, 2, 3, 4)
     recon_methods: tuple = ("linear", "pchip", "cubic", "gp")
-    mlp_recon_N: tuple = (40, 80, 160)
+    mlp_recon_N: tuple = (80, 160)
     mlp_recon_seeds: tuple = (0, 1, 2)
     out_dir: str = "results/exp2"
     n_workers: int = 4

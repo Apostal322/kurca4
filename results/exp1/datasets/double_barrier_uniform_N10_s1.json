@@ -1,0 +1,16 @@
+{
+  "problem": "double_barrier",
+  "potential_params": {
+    "height_left": 10.0,
+    "width_left": 0.8,
+    "well_width": 2.5,
+    "height_right": 10.0,
+    "width_right": 0.8,
+    "well_depth": 0.0,
+    "center": 0.0
+  },
+  "sampling": "uniform",
+  "seed": 1,
+  "n_points": 10,
+  "n_exact_solver_evals": 10
+}

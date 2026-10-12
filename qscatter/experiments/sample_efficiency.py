@@ -78,7 +78,10 @@ def run_one(task) -> dict:
         if seed == cfg.save_models_seed:
             model.save(Path(cfg.out_dir) / "models" / f"{name}_{sampling}_N{N}_{target}_s{seed}.pt")
     else:
-        model = make_baseline(method, P.E_range, seed=seed).fit(ts.E, Y)
+        model = make_baseline(method, P.E_range, seed=seed)
+        if method == "gp" and N >= 320:
+            model.n_restarts = 1  # O(N^3) likelihood; extra restarts did not change optima at N <= 160
+        model.fit(ts.E, Y)
         if method == "gp":
             extra = dict(kernels=" | ".join(model.kernels))
     fit_time = time.perf_counter() - t0
@@ -104,7 +107,8 @@ def build_tasks(cfg: Exp1Config):
         if method == "mlp" and N not in cfg.mlp_budgets:
             continue
         # deterministic designs + deterministic classical interpolants need one seed only
-        deterministic = sampling == "uniform" and method in ("linear", "pchip", "cubic")
+        # (the GP on a uniform design is deterministic too: its seed only moves optimizer restarts)
+        deterministic = sampling == "uniform" and method in ("linear", "pchip", "cubic", "gp")
         seeds = cfg.seeds[:1] if deterministic else (cfg.mlp_seeds if method == "mlp" else cfg.seeds)
         for seed in seeds:
             tasks.append((name, sampling, seed, N, method, target, cfg))

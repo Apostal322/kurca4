@@ -1,5 +1,10 @@
 """Run Experiment 1 (sample efficiency). Resumable: re-running skips finished rows."""
 import argparse
+import os
+
+# one BLAS thread per worker process (otherwise 4 workers x 4 threads oversubscribe the CPU)
+for _v in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS"):
+    os.environ.setdefault(_v, "1")
 
 from qscatter.experiments.sample_efficiency import Exp1Config, run
 
