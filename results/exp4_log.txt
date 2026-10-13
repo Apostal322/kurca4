@@ -4,3 +4,9 @@ mlp_fourier B=32768 s=2 n_evals=32768 median test RMSE_T=5.38e-03 fit 512s
 mlp_fourier B=32768 s=0 n_evals=32768 median test RMSE_T=9.56e-03 fit 518s
 mlp_fourier B=8192 s=0 n_evals=8192 median test RMSE_T=4.61e-02 fit 458s
 gp B=8192 s=0 n_evals=8192 median test RMSE_T=2.87e-01 fit 975s
+gp B=8192 s=1 n_evals=8192 median test RMSE_T=2.88e-01 fit 680s
+gp B=8192 s=2 n_evals=8192 median test RMSE_T=2.56e-01 fit 781s
+mlp_fourier B=8192 s=1 n_evals=8192 median test RMSE_T=5.39e-02 fit 447s
+mlp_fourier B=8192 s=2 n_evals=8192 median test RMSE_T=4.30e-02 fit 453s
+gp B=2048 s=1 n_evals=2048 median test RMSE_T=1.64e-01 fit 222s
+gp B=2048 s=2 n_evals=2048 median test RMSE_T=2.96e-01 fit 149s
