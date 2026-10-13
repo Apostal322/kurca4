@@ -5,7 +5,6 @@ different from the ones that produced the results, and records PASS/FAIL with
 the measured numbers in results/audit/audit_report.md.
 """
 import json
-import time
 from pathlib import Path
 from unittest import mock
 
@@ -19,7 +18,7 @@ from qscatter.data import TrainingSet, make_training_set
 from qscatter.experiments.adaptive import run_strategy
 from qscatter.physics.analytic import single_barrier_T
 from qscatter.physics.ode_solver import solve_ode
-from qscatter.physics.potentials import double_barrier, from_layers
+from qscatter.physics.potentials import from_layers
 from qscatter.physics.resonances import find_resonances
 from qscatter.physics.smatrix import compute_scattering, compute_transmission
 

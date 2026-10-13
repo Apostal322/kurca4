@@ -114,3 +114,11 @@ def test_spurious_peak_metric_ignores_near_duplicate_grid_points():
     T = 0.3 + 0.1 * E  # monotonic, partly above 0.5
     ref = dict(E=E, t=np.sqrt(T).astype(complex), res=[])
     assert pm.config_metrics(ref, T)["n_spurious"] == 0
+
+
+def test_quickstart_cli_runs(tmp_path):
+    """Smoke test of the documented entry point (short MLP training)."""
+    from qscatter.quickstart import main
+
+    assert main(["--fast", "--out", str(tmp_path)]) == 0
+    assert (tmp_path / "quickstart.png").stat().st_size > 10_000

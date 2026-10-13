@@ -5,3 +5,12 @@ results/exp1_quick/
 results/exp3/refs/
 results/exp4/refs/
 results/exp5/refs/
+
+# build artifacts and local outputs
+*.egg-info/
+build/
+dist/
+quickstart_output/
+.venv/
+venv/
+.ruff_cache/

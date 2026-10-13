@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import itertools
 import json
-import os
 import time
 from dataclasses import asdict, dataclass, field
 from multiprocessing import Pool

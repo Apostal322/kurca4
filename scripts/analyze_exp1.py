@@ -8,7 +8,7 @@ import numpy as np
 
 from qscatter.config import PROBLEMS
 from qscatter.data import make_training_set, reference_solution
-from qscatter.plotting import INK2, METHOD_COLORS, METHOD_LABELS, NEUTRAL, setup
+from qscatter.plotting import INK2, METHOD_COLORS, METHOD_LABELS, setup
 from qscatter.surrogates.baselines import T_from_prediction, make_baseline, targets_from_t
 from qscatter.surrogates.mlp import MLPSurrogate
 

@@ -26,7 +26,7 @@ from __future__ import annotations
 import itertools
 import json
 import time
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass
 from multiprocessing import Pool
 from pathlib import Path
 

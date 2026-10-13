@@ -11,7 +11,6 @@ POD + MLP, MLP with dissipative pretraining, hybrid S-matrix composition.
 from __future__ import annotations
 
 import json
-import os
 import time
 from multiprocessing import Pool
 from pathlib import Path
@@ -31,7 +30,16 @@ W_DISSIPATION = 0.05  # absorbing well potential -iW for pretraining (broadens r
 
 
 def _refs(kind):
+    """Reference solutions of the test / OOD configurations (git-ignored cache).
+
+    Rebuilt deterministically and serially if missing (e.g. in a fresh clone); serial so
+    that it is safe to call from scripts without a ``__main__`` guard on Windows.
+    """
     p = OUT / "refs" / f"{kind}.npz"
+    if not p.exists():
+        C = pm.test_configs() if kind == "test" else pm.ood_configs()
+        p.parent.mkdir(parents=True, exist_ok=True)
+        np.savez(p, refs=np.array([pm.config_reference(c) for c in C], dtype=object))
     z = np.load(p, allow_pickle=True)
     return list(z["refs"])
 

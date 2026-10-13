@@ -48,8 +48,8 @@ poles = find_poles(pot, STAGE_B.E_range)
 for r, z, (E_st, G_st, Gp_st) in zip(res, poles, ((0.993817, 7.47e-3, 7.470e-3), (3.886801, 8.74e-2, 8.729e-2),
                                                   (8.384040, 0.532, 0.5185))):
     check(f"resonance E_n = {E_st}", E_st, r.E_res, rel=1e-6)
-    check(f"  FWHM", G_st, r.fwhm, rel=3e-3)
-    check(f"  pole width -2 Im E_pole", Gp_st, -2 * z.imag, rel=3e-3)
+    check("  FWHM", G_st, r.fwhm, rel=3e-3)
+    check("  pole width -2 Im E_pole", Gp_st, -2 * z.imag, rel=3e-3)
 E = np.linspace(*STAGE_B.E_range, 99001)
 check("Stage B unitarity max|T+R-1|", 6.8e-14, float(np.max(compute_scattering(E, pot).unitarity_defect)), roundoff=True)
 

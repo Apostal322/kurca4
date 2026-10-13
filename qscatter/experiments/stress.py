@@ -15,17 +15,16 @@ from __future__ import annotations
 import json
 import time
 import warnings
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass
 from multiprocessing import Pool
 from pathlib import Path
 
 import numpy as np
-from scipy.interpolate import AAA, CubicSpline, PchipInterpolator
+from scipy.interpolate import CubicSpline, PchipInterpolator
 from scipy.signal import find_peaks
 
 from ..physics.poles import find_poles
-from ..physics.potentials import (asymmetric_double_barrier, double_barrier, from_layers,
-                                  gaussian_double_barrier_V, single_barrier, staircase, triple_barrier)
+from ..physics.potentials import (asymmetric_double_barrier, double_barrier, gaussian_double_barrier_V, single_barrier, staircase, triple_barrier)
 from ..physics.smatrix import compute_scattering
 from ..surrogates.rational import RationalAAA
 from .adaptive import _candidates, _segment_acquire
@@ -312,7 +311,6 @@ def fit_predict(method, sysm, N, ref, seed=0):
         t_solve += time.perf_counter() - t0
         streak, cert = 0, None
         tol = max(1e-8, 10 * sysm.noise)
-        cand_all = np.linspace(lo, hi, 8000)
         while E.size < N and cert is None:
             t1 = time.perf_counter()
             r = RationalAAA(rtol=max(1e-13, 3 * sysm.noise)).fit(E, np.column_stack([t.real, t.imag]))

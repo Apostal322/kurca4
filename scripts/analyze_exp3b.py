@@ -6,7 +6,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 
-from qscatter.plotting import INK2, SLOTS, setup
+from qscatter.plotting import INK2, setup
 
 D = Path("results/exp3b")
 setup()

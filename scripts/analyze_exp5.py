@@ -1,7 +1,6 @@
 """Analysis of Experiment 5 (independent stress test) + pole-width vs FWHM study."""
 import json
 import warnings
-from collections import defaultdict
 from pathlib import Path
 
 import matplotlib.pyplot as plt

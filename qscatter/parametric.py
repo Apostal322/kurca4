@@ -15,10 +15,6 @@ Data separation
 from __future__ import annotations
 
 import copy
-import json
-import time
-from dataclasses import dataclass
-from pathlib import Path
 
 import numpy as np
 from scipy.interpolate import CubicSpline, RBFInterpolator, RegularGridInterpolator
@@ -192,7 +188,6 @@ class MLPParam:
         self.init_state = init_state
 
     def _net(self):
-        import torch
         from torch import nn
 
         d_in = 2 * self.nf if self.sigma else 4

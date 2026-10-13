@@ -7,7 +7,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 
-from qscatter.plotting import INK2, NEUTRAL, SLOTS, setup
+from qscatter.plotting import SLOTS, setup
 
 warnings.filterwarnings("ignore")
 D = Path("results/exp4")

@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: tests (${{ matrix.os }}, Python ${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.11", "3.12"]
+    env:
+      OMP_NUM_THREADS: "1"
+      MPLBACKEND: Agg
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - name: Install CPU-only PyTorch and the package
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -e ".[dev]"
+      - name: Static checks (ruff)
+        run: ruff check qscatter tests scripts
+      - name: Markdown link check
+        run: python scripts/check_links.py
+      - name: Import smoke test
+        run: python -c "import qscatter, qscatter.physics.smatrix, qscatter.surrogates.mlp, qscatter.surrogates.rational, qscatter.parametric; print('imports ok')"
+      - name: Unit and physics tests
+        run: python -m pytest -q
+      - name: CLI smoke test (quickstart)
+        run: python -m qscatter.quickstart --fast --out quickstart_output
+
+  scientific-validation:
+    # recomputes the 17 headline numbers of the report against their stated values (~2-4 min)
+    name: reproduce headline numbers
+    runs-on: ubuntu-latest
+    env:
+      OMP_NUM_THREADS: "1"
+      MPLBACKEND: Agg
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -e .
+      - name: Reproduce key results
+        run: python scripts/reproduce_key_results.py
+      - name: Fail if any number was not reproduced
+        run: "! grep -q FAIL results/reproduction_check.md"

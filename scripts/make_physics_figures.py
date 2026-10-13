@@ -151,7 +151,9 @@ plt.close(fig)
 
 # cost of the solvers (for the efficiency discussion)
 Et = np.linspace(*STAGE_B.E_range, 10000)
-t0 = time.perf_counter(); compute_scattering(Et, pB); ts = (time.perf_counter() - t0) / Et.size
+t0 = time.perf_counter()
+compute_scattering(Et, pB)
+ts = (time.perf_counter() - t0) / Et.size
 t0 = time.perf_counter()
 for e in Et[:200]:
     solve_ode(e, pB)

@@ -16,7 +16,6 @@ hyper-parameter choice.
 from __future__ import annotations
 
 import copy
-import json
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
