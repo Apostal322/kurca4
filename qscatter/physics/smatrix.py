@@ -78,7 +78,7 @@ def _layer_smatrix(E: np.ndarray, k: np.ndarray, V: float, d: float):
     right reflection, right->left transmission. Amplitudes are referenced to the
     layer's own left/right edges.
     """
-    q = np.sqrt((E - V).astype(complex))  # any branch: only even functions of q used
+    q = np.sqrt(np.asarray(E - V, dtype=complex))  # any branch: only even functions of q used
     c = np.cos(q * d)
     s_over_q = _sin_over_q(q, d)
     q_s = (q * q) * s_over_q  # q sin(q d)
@@ -161,3 +161,21 @@ class CountingSolver:
         E = np.atleast_1d(np.asarray(E, dtype=float))
         self.n_evals += E.size
         return compute_scattering(E, self.potential)
+
+
+def transmission_complex_energy(E, potential: PiecewiseConstantPotential) -> np.ndarray:
+    """Analytic continuation t(E) for complex E (k = sqrt(E), principal branch).
+
+    The same layer formulas hold for complex E because they are entire in q^2;
+    only the asymptotic k = sqrt(E) carries the branch. With the principal
+    branch, the physical sheet near the positive real axis is reached from
+    Im E < 0 by continuity of Re k > 0, which is where resonance poles
+    E_n = E_r - i Gamma/2 live (Im k < 0). Used only to locate poles exactly.
+    """
+    E = np.atleast_1d(np.asarray(E, dtype=complex))
+    k = np.sqrt(E)
+    S = None
+    for V, d in zip(potential.heights, potential.widths):
+        layer = _layer_smatrix(E, k, complex(V), float(d))
+        S = layer if S is None else _star(S, layer)
+    return S[1] * np.exp(-1j * k * (potential.x_right - potential.x_left))

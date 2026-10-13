@@ -117,10 +117,14 @@ class GP:
 def make_baseline(name: str, domain, seed: int = 0):
     if name == "gp":
         return GP(domain, seed=seed)
+    if name == "aaa":
+        from .rational import RationalAAA
+
+        return RationalAAA()
     return {"linear": Linear, "pchip": Pchip, "cubic": Cubic}[name]()
 
 
-BASELINES = ("linear", "pchip", "cubic", "gp")
+BASELINES = ("linear", "pchip", "cubic", "gp", "aaa")
 
 
 def targets_from_t(t: np.ndarray, target: str) -> np.ndarray:

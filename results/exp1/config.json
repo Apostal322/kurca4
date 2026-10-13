@@ -41,6 +41,7 @@
     "pchip",
     "cubic",
     "gp",
+    "aaa",
     "mlp"
   ],
   "targets": [
