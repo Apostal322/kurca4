@@ -1,0 +1,32 @@
+design single_barrier uniform s0: 0.0s
+design single_barrier random s0: 0.0s
+design single_barrier random s1: 0.0s
+design single_barrier random s2: 0.0s
+design single_barrier random s3: 0.0s
+design single_barrier random s4: 0.0s
+design single_barrier segment_T s0: 0.1s
+design single_barrier segment_t s0: 0.1s
+design single_barrier gp_std s0: 243.6s
+design double_barrier uniform s0: 0.0s
+design double_barrier random s0: 0.0s
+design double_barrier random s1: 0.0s
+design double_barrier random s2: 0.0s
+design double_barrier random s3: 0.0s
+design double_barrier random s4: 0.0s
+design double_barrier segment_T s0: 0.1s
+design double_barrier segment_t s0: 0.1s
+design double_barrier mlp_ensemble s0: 385.8s
+design single_barrier mlp_ensemble s0: 436.8s
+design double_barrier gp_std s0: 197.8s
+[score 1/544]
+[score 51/544]
+[score 101/544]
+[score 151/544]
+[score 201/544]
+[score 251/544]
+[score 301/544]
+[score 351/544]
+[score 401/544]
+[score 451/544]
+[score 501/544]
+EXP2_DONE

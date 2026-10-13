@@ -1,0 +1,13 @@
+{
+  "problem": "single_barrier",
+  "potential_params": {
+    "height": 5.0,
+    "width": 1.0,
+    "center": 0.0
+  },
+  "sampling": "gp_std",
+  "seed": 0,
+  "n_points": 80,
+  "n_exact_solver_evals": 80,
+  "acq_time_s": 7.482257664003555
+}

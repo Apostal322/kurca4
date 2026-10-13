@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+# distribution name; the import package is `qscatter`
+name = "quantum-scattering-surrogates"
+version = "0.1.0"
+description = "Reproducible 1D quantum scattering research comparing PyTorch surrogate models, AAA rational approximation and adaptive sampling for resonance reconstruction."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{name = "Rostislav Pershin"}]
+keywords = ["quantum scattering", "surrogate modeling", "rational approximation", "AAA", "pytorch",
+            "adaptive sampling", "resonances", "computational physics"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+# lower bounds; the exact versions used for the reported results are in requirements-lock.txt
+dependencies = ["numpy>=2.0", "scipy>=1.15", "matplotlib>=3.8", "scikit-learn>=1.4", "torch>=2.2"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.5"]
+
+[project.scripts]
+qscatter-quickstart = "qscatter.quickstart:main"
+
+[project.urls]
+Repository = "https://github.com/Apostal322/quantum-scattering-surrogates"
+
+[tool.setuptools.packages.find]
+include = ["qscatter*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "B"]
+# E501: long table/format lines in analysis scripts; E731/E741: short lambdas and physics names (l, E);
+# B023/B905: closures over loop variables are evaluated immediately; zip(strict=) not required
+ignore = ["E501", "E731", "E741", "B023", "B905"]
+
+[tool.ruff.lint.per-file-ignores]
+# scripts set OMP/BLAS thread variables before importing numpy
+"scripts/*" = ["E402"]

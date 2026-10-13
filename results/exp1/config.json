@@ -1,0 +1,55 @@
+{
+  "problems": [
+    "single_barrier",
+    "double_barrier"
+  ],
+  "budgets": [
+    10,
+    20,
+    40,
+    80,
+    160,
+    320,
+    640
+  ],
+  "mlp_budgets": [
+    10,
+    20,
+    40,
+    80,
+    160,
+    320
+  ],
+  "samplings": [
+    "uniform",
+    "random"
+  ],
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "mlp_seeds": [
+    0,
+    1,
+    2
+  ],
+  "methods": [
+    "linear",
+    "pchip",
+    "cubic",
+    "gp",
+    "aaa",
+    "mlp"
+  ],
+  "targets": [
+    "amplitude",
+    "T"
+  ],
+  "out_dir": "results/exp1",
+  "save_models_seed": 0,
+  "n_workers": 4,
+  "mlp_overrides": {}
+}

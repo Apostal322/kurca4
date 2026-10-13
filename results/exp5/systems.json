@@ -1,0 +1,476 @@
+[
+ {
+  "key": "asym_00",
+  "family": "asymmetric double barrier",
+  "kind": "asym",
+  "p": {
+   "VL": 8.873,
+   "aL": 0.946,
+   "d": 3.044,
+   "VR": 7.881,
+   "aR": 0.488
+  },
+  "E_range": [
+   0.1,
+   7.881
+  ],
+  "noise": 0.0,
+  "ml": true
+ },
+ {
+  "key": "asym_01",
+  "family": "asymmetric double barrier",
+  "kind": "asym",
+  "p": {
+   "VL": 9.07,
+   "aL": 0.465,
+   "d": 2.435,
+   "VR": 8.176,
+   "aR": 0.473
+  },
+  "E_range": [
+   0.1,
+   8.176
+  ],
+  "noise": 0.0,
+  "ml": true
+ },
+ {
+  "key": "asym_02",
+  "family": "asymmetric double barrier",
+  "kind": "asym",
+  "p": {
+   "VL": 7.453,
+   "aL": 1.055,
+   "d": 2.762,
+   "VR": 7.432,
+   "aR": 0.478
+  },
+  "E_range": [
+   0.1,
+   7.432
+  ],
+  "noise": 0.0,
+  "ml": true
+ },
+ {
+  "key": "asym_03",
+  "family": "asymmetric double barrier",
+  "kind": "asym",
+  "p": {
+   "VL": 12.982,
+   "aL": 0.723,
+   "d": 3.468,
+   "VR": 8.611,
+   "aR": 0.961
+  },
+  "E_range": [
+   0.1,
+   8.611
+  ],
+  "noise": 0.0,
+  "ml": true
+ },
+ {
+  "key": "asym_04",
+  "family": "asymmetric double barrier",
+  "kind": "asym",
+  "p": {
+   "VL": 7.092,
+   "aL": 0.646,
+   "d": 2.073,
+   "VR": 12.438,
+   "aR": 0.792
+  },
+  "E_range": [
+   0.1,
+   7.092
+  ],
+  "noise": 0.0,
+  "ml": false
+ },
+ {
+  "key": "asym_05",
+  "family": "asymmetric double barrier",
+  "kind": "asym",
+  "p": {
+   "VL": 10.375,
+   "aL": 0.688,
+   "d": 2.506,
+   "VR": 10.006,
+   "aR": 0.769
+  },
+  "E_range": [
+   0.1,
+   10.006
+  ],
+  "noise": 0.0,
+  "ml": false
+ },
+ {
+  "key": "asym_06",
+  "family": "asymmetric double barrier",
+  "kind": "asym",
+  "p": {
+   "VL": 13.656,
+   "aL": 0.443,
+   "d": 2.584,
+   "VR": 11.134,
+   "aR": 0.764
+  },
+  "E_range": [
+   0.1,
+   11.134
+  ],
+  "noise": 0.0,
+  "ml": false
+ },
+ {
+  "key": "asym_07",
+  "family": "asymmetric double barrier",
+  "kind": "asym",
+  "p": {
+   "VL": 6.477,
+   "aL": 1.144,
+   "d": 2.696,
+   "VR": 11.521,
+   "aR": 0.865
+  },
+  "E_range": [
+   0.1,
+   6.477
+  ],
+  "noise": 0.0,
+  "ml": false
+ },
+ {
+  "key": "asym_08",
+  "family": "asymmetric double barrier",
+  "kind": "asym",
+  "p": {
+   "VL": 9.686,
+   "aL": 0.461,
+   "d": 2.511,
+   "VR": 8.262,
+   "aR": 0.463
+  },
+  "E_range": [
+   0.1,
+   8.262
+  ],
+  "noise": 0.0,
+  "ml": false
+ },
+ {
+  "key": "asym_09",
+  "family": "asymmetric double barrier",
+  "kind": "asym",
+  "p": {
+   "VL": 10.151,
+   "aL": 0.975,
+   "d": 3.043,
+   "VR": 7.749,
+   "aR": 0.692
+  },
+  "E_range": [
+   0.1,
+   7.749
+  ],
+  "noise": 0.0,
+  "ml": false
+ },
+ {
+  "key": "asym_10",
+  "family": "asymmetric double barrier",
+  "kind": "asym",
+  "p": {
+   "VL": 6.085,
+   "aL": 0.493,
+   "d": 2.705,
+   "VR": 8.012,
+   "aR": 0.689
+  },
+  "E_range": [
+   0.1,
+   6.085
+  ],
+  "noise": 0.0,
+  "ml": false
+ },
+ {
+  "key": "asym_11",
+  "family": "asymmetric double barrier",
+  "kind": "asym",
+  "p": {
+   "VL": 12.472,
+   "aL": 0.555,
+   "d": 1.79,
+   "VR": 13.461,
+   "aR": 0.76
+  },
+  "E_range": [
+   0.1,
+   12.472
+  ],
+  "noise": 0.0,
+  "ml": false
+ },
+ {
+  "key": "asym_12",
+  "family": "asymmetric double barrier",
+  "kind": "asym",
+  "p": {
+   "VL": 8.24,
+   "aL": 0.437,
+   "d": 1.89,
+   "VR": 12.362,
+   "aR": 1.081
+  },
+  "E_range": [
+   0.1,
+   8.24
+  ],
+  "noise": 0.0,
+  "ml": false
+ },
+ {
+  "key": "asym_13",
+  "family": "asymmetric double barrier",
+  "kind": "asym",
+  "p": {
+   "VL": 13.909,
+   "aL": 0.634,
+   "d": 3.07,
+   "VR": 8.693,
+   "aR": 0.886
+  },
+  "E_range": [
+   0.1,
+   8.693
+  ],
+  "noise": 0.0,
+  "ml": false
+ },
+ {
+  "key": "asym_14",
+  "family": "asymmetric double barrier",
+  "kind": "asym",
+  "p": {
+   "VL": 12.529,
+   "aL": 0.849,
+   "d": 1.531,
+   "VR": 11.587,
+   "aR": 0.42
+  },
+  "E_range": [
+   0.1,
+   11.587
+  ],
+  "noise": 0.0,
+  "ml": false
+ },
+ {
+  "key": "triple_amid0.5",
+  "family": "triple barrier (resonance doublets)",
+  "kind": "triple",
+  "p": {
+   "V0": 10.0,
+   "a_out": 0.7,
+   "a_mid": 0.5,
+   "d": 2.0
+  },
+  "E_range": [
+   0.1,
+   10.0
+  ],
+  "noise": 0.0,
+  "ml": false
+ },
+ {
+  "key": "triple_amid0.9",
+  "family": "triple barrier (resonance doublets)",
+  "kind": "triple",
+  "p": {
+   "V0": 10.0,
+   "a_out": 0.7,
+   "a_mid": 0.9,
+   "d": 2.0
+  },
+  "E_range": [
+   0.1,
+   10.0
+  ],
+  "noise": 0.0,
+  "ml": true
+ },
+ {
+  "key": "triple_amid1.3",
+  "family": "triple barrier (resonance doublets)",
+  "kind": "triple",
+  "p": {
+   "V0": 10.0,
+   "a_out": 0.7,
+   "a_mid": 1.3,
+   "d": 2.0
+  },
+  "E_range": [
+   0.1,
+   10.0
+  ],
+  "noise": 0.0,
+  "ml": false
+ },
+ {
+  "key": "triple_amid1.7",
+  "family": "triple barrier (resonance doublets)",
+  "kind": "triple",
+  "p": {
+   "V0": 10.0,
+   "a_out": 0.7,
+   "a_mid": 1.7,
+   "d": 2.0
+  },
+  "E_range": [
+   0.1,
+   10.0
+  ],
+  "noise": 0.0,
+  "ml": true
+ },
+ {
+  "key": "smooth_gauss_A",
+  "family": "smooth double-Gaussian barrier",
+  "kind": "smooth",
+  "p": {
+   "V0": 8.0,
+   "c": 1.6,
+   "s": 0.35
+  },
+  "E_range": [
+   0.1,
+   8.0
+  ],
+  "noise": 0.0,
+  "ml": true
+ },
+ {
+  "key": "smooth_gauss_B",
+  "family": "smooth double-Gaussian barrier",
+  "kind": "smooth",
+  "p": {
+   "V0": 12.0,
+   "c": 1.8,
+   "s": 0.4
+  },
+  "E_range": [
+   0.1,
+   12.0
+  ],
+  "noise": 0.0,
+  "ml": true
+ },
+ {
+  "key": "wide_0.1_30",
+  "family": "wide interval (above-barrier resonances)",
+  "kind": "sym",
+  "p": {
+   "V0": 10.0,
+   "a": 0.8,
+   "d": 2.5
+  },
+  "E_range": [
+   0.1,
+   30.0
+  ],
+  "noise": 0.0,
+  "ml": true
+ },
+ {
+  "key": "wide_0.1_60",
+  "family": "wide interval (above-barrier resonances)",
+  "kind": "sym",
+  "p": {
+   "V0": 10.0,
+   "a": 0.8,
+   "d": 2.5
+  },
+  "E_range": [
+   0.1,
+   60.0
+  ],
+  "noise": 0.0,
+  "ml": false
+ },
+ {
+  "key": "asym_00_noise1e-08",
+  "family": "asymmetric + noise 1e-08",
+  "kind": "asym",
+  "p": {
+   "VL": 8.873,
+   "aL": 0.946,
+   "d": 3.044,
+   "VR": 7.881,
+   "aR": 0.488
+  },
+  "E_range": [
+   0.1,
+   7.881
+  ],
+  "noise": 1e-08,
+  "ml": false
+ },
+ {
+  "key": "asym_01_noise1e-08",
+  "family": "asymmetric + noise 1e-08",
+  "kind": "asym",
+  "p": {
+   "VL": 9.07,
+   "aL": 0.465,
+   "d": 2.435,
+   "VR": 8.176,
+   "aR": 0.473
+  },
+  "E_range": [
+   0.1,
+   8.176
+  ],
+  "noise": 1e-08,
+  "ml": false
+ },
+ {
+  "key": "asym_00_noise0.0001",
+  "family": "asymmetric + noise 0.0001",
+  "kind": "asym",
+  "p": {
+   "VL": 8.873,
+   "aL": 0.946,
+   "d": 3.044,
+   "VR": 7.881,
+   "aR": 0.488
+  },
+  "E_range": [
+   0.1,
+   7.881
+  ],
+  "noise": 0.0001,
+  "ml": false
+ },
+ {
+  "key": "asym_01_noise0.0001",
+  "family": "asymmetric + noise 0.0001",
+  "kind": "asym",
+  "p": {
+   "VL": 9.07,
+   "aL": 0.465,
+   "d": 2.435,
+   "VR": 8.176,
+   "aR": 0.473
+  },
+  "E_range": [
+   0.1,
+   8.176
+  ],
+  "noise": 0.0001,
+  "ml": false
+ }
+]
