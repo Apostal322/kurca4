@@ -104,3 +104,13 @@ def test_robustness_oracle_counts_and_convention(X):
     t = o(E)
     assert o.n == 7
     np.testing.assert_allclose(np.abs(t), np.abs(compute_scattering(E, s.potential()).t), atol=1e-14)
+
+
+def test_spurious_peak_metric_ignores_near_duplicate_grid_points():
+    """Regression: a monotonic T on a grid with near-coincident points has no peaks."""
+    from qscatter import parametric as pm
+
+    E = np.sort(np.concatenate([np.linspace(0.2, 5, 400), np.linspace(0.2, 5, 400) + 1e-15]))
+    T = 0.3 + 0.1 * E  # monotonic, partly above 0.5
+    ref = dict(E=E, t=np.sqrt(T).astype(complex), res=[])
+    assert pm.config_metrics(ref, T)["n_spurious"] == 0

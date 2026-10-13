@@ -52,8 +52,25 @@ An independent audit with 10 checks passes, including a leakage test with a pois
    disappears under some phase conventions, so it is an empirical effect, not a guarantee.
 5. **Detectability limit.** An unseen resonance can be recovered only if its tail signal Γ/h exceeds the
    larger of the data error and the background-approximation error. The measured detectability map is in §4.4.
-6. **Parametric surrogate.** <<EXP4_SUMMARY>>
-7. **Cost.** <<COST_SUMMARY>>
+6. **Parametric surrogate (E, V₀, a, d) → t.**
+   - A plain MLP is the best *generic* method. At equal budget it is ~10× more accurate than tensor-grid
+     splines, RBF, GP and POD + MLP (RMSE 3.5·10⁻³ at 32k evaluations). The neural network does become
+     competitive in higher dimension.
+   - Fourier features and dissipative pretraining did **not** improve it.
+   - A structure-exploiting hybrid is 2–3 orders of magnitude more accurate (4.5·10⁻⁵ at 2k evaluations):
+     it learns only the smooth single-barrier S-matrix and composes the double barrier exactly.
+   - If each new configuration can be computed on demand, AAA needs only 16 evaluations per configuration
+     (6·10⁻¹⁰).
+7. **Independent stress test on 27 unseen systems.** These are asymmetric barriers, coupled-well doublets,
+   a smooth Gaussian potential, wide intervals, and noisy data.
+   - It confirms the AAA result.
+   - It locates its limits: under-resolution when there are many poles; instability only in under-resolved
+     fits; premature self-certification under 10⁻⁴ noise.
+8. **Cost.**
+   - With the slow ODE solver (4.4 ms per call), 30 evaluations + AAA reproduce a 20,001-point scan
+     **≈700× faster** (measured).
+   - With the fast solver, no surrogate is faster than direct computation.
+   - MLP training (~20 s) destroys most of the gain.
 
 ### Errata: what changed relative to the first version of this report
 
@@ -62,6 +79,9 @@ An independent audit with 10 checks passes, including a leakage test with a pois
 | "On resonant curves the decisive factor is where the solver is evaluated, not the model class"; "an interpolant cannot invent a peak it has not seen" | **Wrong for rational approximation.** It holds only for local methods (splines, GP, MLP). | AAA on t(k) recovers resonances from their analytic tails (§4.2, §4.3). |
 | Amplitude-driven adaptive sampling is "the single largest improvement" | **Superseded.** It is a real but secondary, convention-dependent effect. | Exp. 3: 15/20 systems vs 20/20 for AAA; fails with phase reference X = 50 (§4.3). |
 | — | The audit found no numerical, leakage or counting errors. The only fix was a pole-extraction detail in the audit itself (spurious Froissart doublets). | `results/audit/audit_report.md` |
+| "Self-certification without false alarms" | **Restricted** to noise-free or weakly noisy data. At noise 10⁻⁴ one certification came at 45× the noise level. | Exp. 5 |
+| Spurious-peak counts in Exp. 4 (first computation) | **Metric bug**: flat pairs of near-coincident grid points were counted as peaks. Recomputed for the deterministic methods and the MLP; withdrawn otherwise. | `results/exp4/summary.md` |
+| FWHM vs pole width deviation of ~2 % (first Exp. 5 analysis) | **Measurement artefact**: grid resolution of 0.02Γ. Root-refined: 7.8·10⁻⁵ for isolated resonances. | §4.7 |
 
 ---
 
@@ -226,24 +246,151 @@ universal, so we report the measured map rather than a law.
 
 ### 4.5 Experiment 4: parametric surrogate (E, V₀, a, d) → t
 
-<<EXP4_SECTION>>
+**Setup.**
+- Domain: E ∈ [0.2, 5], V₀ ∈ [5, 10], a ∈ [0.3, 0.7], d ∈ [1.5, 3]; tunnelling regime with 1–2 resonances
+  of widths 7·10⁻³…1.
+- Training: Sobol configurations × 32 energies. Every 8th configuration validates; the validation data
+  count towards the budget.
+- Evaluation: 40 held-out test configurations (independent random stream) and 20 out-of-domain ones (one
+  parameter 2–10 % beyond the edge), each on pole-resolved reference grids.
+- Leakage check: no configuration is shared between any splits. Test configurations sit at about half the
+  training spacing from their nearest neighbour (`results/exp4/leakage_check.md`).
+
+Median test RMSE(T), median over 3 seeds:
+
+| method | B = 2,048 | B = 8,192 | B = 32,768 | resonances found (32k) | OOD (32k) |
+|---|---|---|---|---|---|
+| tensor-grid cubic | 2.0e-1 | 9.8e-2 | 4.6e-2 | 56/68 | 1.2e-1 |
+| RBF (thin plate) | 1.7e-1 | 1.2e-1 | 8.0e-2 | 43/68 | 1.5e-1 |
+| GP (exact, ≤ 2,048 pts) | 1.6e-1 | 2.9e-1 | — | — | — |
+| POD + MLP | 1.5e-1 | 1.1e-1 | 5.0e-2 | 57/68 | 8.9e-2 |
+| **MLP** | **9.4e-3** | **4.3e-3** | **3.5e-3** | 67/68 | 7.9e-3 |
+| MLP + Fourier features | 1.7e-1 | 4.6e-2 | 9.6e-3 | 61/68 | 1.1e-1 |
+| MLP, dissipative pretraining (half the budget lossy) | 3.0e-2 | 1.1e-2 | 9.0e-3 | 62/68 | 1.9e-2 |
+| **hybrid: learned single-barrier S + exact star product** | **4.5e-5** | **1.3e-5** | **4.7e-6** | **68/68** | **2.3e-5** |
+| per-configuration AAA at query time, 16 evaluations per configuration | 6.3e-10, 68/68 (OOD 4.0e-9, 35/35) | | | | |
+
+![Exp4](../results/exp4/figures/exp4_rmse_vs_budget.png)
+
+**Findings.**
+- **The MLP outperforms local and kernel interpolators in 4D.** Resonance ridges E_n(V₀, a, d) are narrow in
+  E and curved in parameter space, which hurts tensor grids and stationary kernels.
+- **Fourier features did not help.** Validation always selected the smallest σ, and the error grows more
+  strongly with distance to the training set (Spearman ρ = 0.71 vs 0.18 for the plain MLP at B = 2,048).
+- **Dissipative pretraining was 2.5–3× worse** than training from scratch at equal total budget, in our 1D
+  transfer of the idea.
+- **POD compresses well but predicts poorly.** Rank 54–64 represents the scans exactly, but moving
+  resonances make the coefficient map hard to learn.
+- **The hybrid wins by 2–3 orders of magnitude** and extrapolates well, but it needs the block decomposition.
+- **Per-configuration AAA uses a different cost model.** A parametric surrogate with budget B pays off only
+  when more than ~B/16 configurations are needed: more than 128 for the MLP at B = 2,048, and then at
+  ~10⁷× lower accuracy.
+- **Spurious peaks** (corrected metric): 0 for the MLP and the hybrid, 0–10 for the tensor spline.
+
+### 4.6 Experiment 5: independent stress test (27 unseen systems, equal budgets)
+
+The families were never used for development (seed 20261013):
+- 15 asymmetric double barriers;
+- 4 coupled-well triple barriers (overlapping doublets);
+- 2 smooth double-Gaussian barriers, a 4,000-layer staircase whose O(h²) convergence was verified against
+  direct ODE integration of the smooth V(x), with discretisation error 1.6·10⁻⁶;
+- 2 wide intervals up to E = 60;
+- noise 10⁻⁸ and 10⁻⁴.
+
+Scoring is peak-relative: a resonance counts as reconstructed when max |T̂ − T| within ±2Γ is ≤ 10 % of its
+peak. Full tables: `results/exp5/summary.md`.
+
+| family (resonances) | AAA(t), N = 20 / 40 | greedy AAA | segment(E,t) + PCHIP, 160 | cubic(T), 160 | GP(t), 160 | hybrid, 80 / 160 | MLP / FF-MLP, 160 |
+|---|---|---|---|---|---|---|---|
+| asymmetric (37) | 37/37 / 37/37 | 37/37 | 35/37 | 21/37 | 21/37 | 37/37 / 37/37 | 6/11 / 6/11 |
+| doublets (16) | **11/16** / 16/16 | 16/16 | 11/16 | 8/16 | 3/16 | 16/16 / 16/16 | 2/8 / 2/8 |
+| smooth (5) | 5/5 / 5/5 | 5/5 | 4/5 | 2/5 | 2/5 | n/a | 1/5 / 2/5 |
+| wide intervals (13) | **2/13** / 12/13 (80: 13/13) | 13/13 (39 evals) | 11/13 | 8/13 | 8/13 | 12/13 / 13/13 | 1/4 / 2/4 |
+| noise 10⁻⁴ (5) | 4/5 / 5/5 (RMSE 4e-5) | 5/5, **RMSE 2e-3** | 5/5 | 4/5 | 4/5 | — | — |
+
+![Exp5](../results/exp5/figures/exp5_equal_budget.png)
+
+**Rational-approximant diagnostics.** Every approximant pole was classified against the exact Newton-refined
+poles (27 systems × 4 budgets × 2 methods):
+- With N ≥ 40 all 83 resonance poles were matched (median position error 10⁻¹³Γ), and no resonance was
+  missed.
+- Froissart doublets (negligible residue or a near-cancelling zero) and non-physical upper-half-plane poles
+  occur, but none produced a spurious peak.
+- Sensitivity to a 10⁻¹⁰ data perturbation is ≤ 10⁻⁶ in every converged fit. It reached 10⁻⁴…1 only in
+  under-resolved fits (window 0.1–60 at N = 40; doublets at N = 20). This makes the perturbation test a
+  cheap reliability indicator.
+
+### 4.7 Pole width vs FWHM
+
+Write t = a(E)/(E − E_p) + b(E), with a and b varying on a scale Λ: the distance D to the next pole, or E_r.
+First-order terms in (E − E_r)/Λ are odd about E_r. They shift the peak by ~Γ·(Γ/Λ) but change the half-width
+only at second order, so FWHM/Γ_p − 1 = O((Γ/Λ)²).
+
+Over the 73 stress-test resonances, with half-maximum crossings root-refined by the exact solver:
+- The median deviation is 7.8·10⁻⁵ for isolated resonances (x = max(Γ/D, Γ/E_r) < 10⁻²).
+- The deviation grows as x^1.7, with slope ≈ 2 for x < 0.1, as predicted.
+- For overlapping doublets (Γ/D ≈ 0.5–2), FWHM/Γ_p = 0.84…2.6. Two poles produce one merged peak, so only
+  the pole width (lifetime ħ/Γ_p) remains meaningful.
+- A first analysis read the crossings off grid points (resolution 0.02Γ) and reported a spurious 2 %
+  deviation. That was corrected.
+
+![Pole vs FWHM](../results/exp5/figures/exp5_pole_vs_fwhm.png)
 
 ## 5. Computational cost
 
-<<COST_SECTION>>
+Measured on an idle machine, single thread (`results/cost/cost_1d.md`). The target is T(E) on 20,001
+energies for Stage B.
+
+| solver | pipeline | calls | solver [s] | acquisition [s] | fit [s] | inference [s] | total [s] | RMSE(T) | speed-up |
+|---|---|---|---|---|---|---|---|---|---|
+| S-matrix (vectorised) | direct scan | 20,001 | 0.012 | — | — | — | 0.012 | 0 | 1× |
+| S-matrix | 30 uniform + AAA | 30 | 0.0004 | — | 0.004 | 0.006 | 0.011 | 2e-11 | 1.1× |
+| S-matrix | greedy AAA (24) | 24 | 0.004 | 0.058 | 0.003 | 0.005 | 0.070 | 1e-12 | 0.18× |
+| S-matrix | 160 uniform + MLP | 160 | 0.0004 | — | 24.5 | 0.037 | 24.5 | 2.5e-2 | 0.0005× |
+| ODE (DOP853) | direct scan | 20,001 | 89.5 | — | — | — | 89.5 | 9e-12 | 1× |
+| ODE | 30 uniform + AAA | 30 | 0.117 | — | 0.007 | 0.004 | 0.128 | 5e-10 | **≈700×** |
+| ODE | greedy AAA (24) | 24 | 0.098 | 0.069 | 0.003 | 0.003 | 0.174 | 9e-12 | ≈510× |
+| ODE | segment(E,t) 160 + PCHIP | 160 | 0.708 | 0.017 | 0.001 | 0.001 | 0.726 | 2e-4 | ≈120× |
+| ODE | 160 uniform + MLP | 160 | 0.66 | — | 22.4 | 0.032 | 23.0 | 2.6e-2 | 3.9× |
+
+The ODE solver was first checked against the S-matrix reference: 9·10⁻¹² over the whole grid.
+
+**Break-even** is the number of single-energy queries after which building the surrogate is cheaper than
+calling the solver:
+- AAA: 28 queries;
+- MLP: 5,275 queries with the ODE solver, 1.5·10⁵ with the fast solver.
+
+**Solver-call reduction is not wall-clock acceleration.** It becomes acceleration only when an exact call
+costs much more than building the surrogate. Methods with negligible construction cost (AAA, splines, the
+hybrid) benefit first.
+
+**Parametric cost** (Experiment 4, fast solver):
+- data generation: 0.015–0.85 s;
+- training: MLP 105–116 s, Fourier MLP 450–510 s, GP 220–780 s;
+- prediction: MLP ≈ 1.5 µs/point, hybrid 2.5–5 µs, RBF and GP 120–270 µs.
+
+With the ODE solver, generating 32,768 calls would take ≈ 140 s. This is projected from the measured cost per
+call, not a measured run, and it is comparable to the MLP training time.
 
 ## 6. Conclusions
 
 1. **Choose the representation before the model class.** The complex amplitude, treated as a meromorphic
    function of k, combined with rational approximation, reduced the number of exact evaluations for resonant
-   observables by 2–3 orders of magnitude compared with every other method, robustly across 38 systems. It
-   also provides a reliable self-certifying stopping rule.
+   observables by 2–3 orders of magnitude compared with every other method, across 65 systems (Experiments 3
+   and 5). Its look-ahead self-certification was reliable on noise-free data but premature in one of two
+   systems with noise 10⁻⁴.
 2. **Adaptive sampling** is useful for local interpolants, especially when it is driven by the amplitude rather
    than by T. Its gain is smaller and depends on conventions and system parameters.
-3. **Neural networks** gave no accuracy advantage in 1D. Where they become competitive in the parametric
-   setting, and against what, is shown in §4.5. Structure-exploiting models (S-matrix composition) remained
-   superior there.
-4. **Solver-call savings are not wall-clock savings** unless an exact evaluation is expensive (§5).
+3. **Neural networks** gave no accuracy advantage in 1D. In the 4D parametric problem the plain MLP is the best
+   *generic* method. Structure-exploiting composition of S-matrices beats it by 2–3 orders of magnitude, and
+   so does per-configuration AAA whenever configurations can be computed on demand.
+4. **Stress test.** The AAA conclusion holds on 27 unseen systems, including asymmetric barriers, overlapping
+   doublets and a smooth potential. Its failure modes are now measured:
+   - under-resolution when the window contains many poles;
+   - instability only in under-resolved fits;
+   - a detectability floor Γ/h ≳ C·max(data error, background error);
+   - premature self-certification with noisy data.
+5. **Solver-call savings are not wall-clock savings** unless an exact evaluation is expensive (§5).
 
 ## 7. Limitations and future work
 
@@ -260,6 +407,10 @@ universal, so we report the measured map rather than a law.
   - POD + NN (Dölz & Henríquez).
 
   Please verify the citation details against the originals.
+* **Noisy data.** The look-ahead tolerance of 10σ certified too early at σ = 10⁻⁴; noisy solvers need a
+  different calibration.
+* **Parametric extension.** Parametric rational approximation (pole tracking) is not implemented. The
+  Fourier-feature σ grid did not go below 0.5. Dissipative pretraining was tried with a single W.
 * **Statistics.** 3–5 seeds per configuration. Confidence intervals are reported, and conclusions are drawn
   only where the differences far exceed the spread.
 * **Next steps:**
