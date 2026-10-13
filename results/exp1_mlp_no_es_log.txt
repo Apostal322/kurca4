@@ -1,0 +1,2 @@
+72 tasks to run (0 already done)
+[1/72] single_barrier uniform N=320 mlp/amplitude rmse_T=1.35e-04

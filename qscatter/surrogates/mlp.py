@@ -41,6 +41,8 @@ class MLPConfig:
     device: str = "cpu"
     seed: int = 0
     refit: bool = True
+    # False: no validation split, train on all N points for max_epochs (ablation)
+    early_stopping: bool = True
 
 
 def set_determinism(seed: int):
@@ -132,6 +134,13 @@ class MLPSurrogate:
         n_out = Y.shape[1]
         init = MLP(n_out, cfg.hidden, cfg.activation).double().to(cfg.device)
         init_state = copy.deepcopy(init.state_dict())
+
+        if not cfg.early_stopping:
+            model = init
+            _, final, hist = self._train(model, self._x(E), torch.tensor(Ys, device=cfg.device), cfg.max_epochs)
+            self.log = TrainLog(best_epoch=cfg.max_epochs, final_train_loss=final, history=hist)
+            self.model = model.eval()
+            return self
 
         n = E.size
         interior = np.arange(1, n - 1)

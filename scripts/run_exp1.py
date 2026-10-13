@@ -12,9 +12,15 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--quick", action="store_true", help="tiny smoke run")
+    ap.add_argument("--mlp-no-early-stopping", action="store_true",
+                    help="ablation: MLP trained for the full epoch budget without validation split")
     a = ap.parse_args()
     cfg = Exp1Config(n_workers=a.workers)
     if a.quick:
         cfg = Exp1Config(budgets=(10, 20), mlp_budgets=(10,), seeds=(0,), out_dir="results/exp1_quick",
                          n_workers=a.workers, mlp_overrides=dict(max_epochs=500, min_epochs=100))
+    if a.mlp_no_early_stopping:
+        cfg = Exp1Config(methods=("mlp",), samplings=("uniform",), targets=("amplitude", "T"),
+                         out_dir="results/exp1_mlp_no_es", n_workers=a.workers,
+                         mlp_overrides=dict(early_stopping=False))
     run(cfg)

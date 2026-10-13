@@ -1,0 +1,47 @@
+{
+  "problems": [
+    "single_barrier",
+    "double_barrier"
+  ],
+  "strategies": [
+    "uniform",
+    "random",
+    "segment_T",
+    "segment_t",
+    "gp_std",
+    "mlp_ensemble"
+  ],
+  "checkpoints": [
+    10,
+    20,
+    40,
+    80,
+    160,
+    320
+  ],
+  "mlp_ensemble_max": 160,
+  "random_seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "recon_methods": [
+    "linear",
+    "pchip",
+    "cubic",
+    "gp"
+  ],
+  "mlp_recon_N": [
+    80,
+    160
+  ],
+  "mlp_recon_seeds": [
+    0,
+    1,
+    2
+  ],
+  "out_dir": "results/exp2",
+  "n_workers": 3
+}

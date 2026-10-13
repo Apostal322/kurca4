@@ -1,0 +1,17 @@
+design single_barrier uniform s0: 0.0s
+design single_barrier random s0: 0.0s
+design single_barrier random s1: 0.0s
+design single_barrier random s2: 0.0s
+design single_barrier random s3: 0.0s
+design single_barrier random s4: 0.0s
+design single_barrier segment_T s0: 0.1s
+design single_barrier segment_t s0: 0.1s
+design single_barrier gp_std s0: 243.6s
+design double_barrier uniform s0: 0.0s
+design double_barrier random s0: 0.0s
+design double_barrier random s1: 0.0s
+design double_barrier random s2: 0.0s
+design double_barrier random s3: 0.0s
+design double_barrier random s4: 0.0s
+design double_barrier segment_T s0: 0.1s
+design double_barrier segment_t s0: 0.1s

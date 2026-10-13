@@ -1,0 +1,12 @@
+{
+  "problem": "single_barrier",
+  "potential_params": {
+    "height": 5.0,
+    "width": 1.0,
+    "center": 0.0
+  },
+  "sampling": "random",
+  "seed": 3,
+  "n_points": 40,
+  "n_exact_solver_evals": 40
+}

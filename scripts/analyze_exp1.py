@@ -82,11 +82,12 @@ for ax, samp in zip(axes, ("uniform", "random")):
                 label=METHOD_LABELS[m])
     ax.set_xscale("log", base=2)
     ax.set_xticks([10, 20, 40, 80, 160, 320, 640], ["10", "20", "40", "80", "160", "320", "640"])
-    ax.set(xlabel="N exact solver evaluations", title=f"Resonances reproduced (of 3), {samp} design\n"
-           "(peak > 0.5 within ±Γ of the true peak; amplitude target; mean over seeds)")
+    ax.set(xlabel="N exact solver evaluations", title=f"{samp} design")
 axes[0].set_ylabel("resonances detected")
 axes[0].set_yticks([0, 1, 2, 3])
 axes[0].legend(loc="upper left")
+fig.suptitle("Stage B: resonances reproduced (of 3) — peak > 0.5 within ±Γ of the true peak; "
+             "amplitude target; mean over seeds", y=1.02, fontsize=10)
 fig.savefig(FIG / "exp1_resonances_detected.png")
 plt.close(fig)
 
@@ -110,7 +111,7 @@ for col, (prob, N) in enumerate((("single_barrier", 10), ("double_barrier", 80))
         axes[1, col].semilogy(ref.E, np.abs(T_hat - ref.T) + 1e-16, color=METHOD_COLORS[m], lw=1)
     axes[0, col].plot(ref.E, ref.T, color="#0b0b0b", lw=1, ls=":", label="exact")
     axes[0, col].plot(ts.E, ts.T, "o", color="#0b0b0b", ms=4, label=f"{N} training points")
-    axes[0, col].set(ylabel="T(E)", title=f"{TITLES[prob]}, N={N} uniform (amplitude target)")
+    axes[0, col].set(ylabel="T(E)", title=f"{TITLES[prob].split(':')[0]}, N={N} uniform, amplitude target")
     axes[1, col].set(xlabel="E", ylabel="|T̂ − T|", ylim=(1e-8, 2))
 axes[0, 0].legend(fontsize=8)
 fig.savefig(FIG / "exp1_examples.png")

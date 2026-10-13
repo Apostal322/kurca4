@@ -1,0 +1,6 @@
+single_barrier  N=  40  RMSE_T on n_ref=20001: 6.849299e-05   on 4x finer grid: 6.849427e-05   relative change 1.9e-05
+single_barrier  N= 160  RMSE_T on n_ref=20001: 1.558925e-06   on 4x finer grid: 1.558954e-06   relative change 1.9e-05
+single_barrier  N= 640  RMSE_T on n_ref=20001: 3.494461e-08   on 4x finer grid: 3.494528e-08   relative change 1.9e-05
+double_barrier  N=  40  RMSE_T on n_ref=99001: 5.173588e-02   on 4x finer grid: 5.173608e-02   relative change 3.8e-06
+double_barrier  N= 160  RMSE_T on n_ref=99001: 2.783933e-02   on 4x finer grid: 2.783944e-02   relative change 3.8e-06
+double_barrier  N= 640  RMSE_T on n_ref=99001: 1.804469e-02   on 4x finer grid: 1.804475e-02   relative change 3.8e-06
