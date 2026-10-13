@@ -1,0 +1,6 @@
+{'method': 'mlp', 'budget': 2048, 'split': 'test', 'n_evals': 2048, 'spurious': 0, 'median_rmse': 0.007769585788859482}
+{'method': 'mlp', 'budget': 2048, 'split': 'ood', 'n_evals': 2048, 'spurious': 0, 'median_rmse': 0.023091234064287963}
+{'method': 'mlp', 'budget': 8192, 'split': 'test', 'n_evals': 8192, 'spurious': 0, 'median_rmse': 0.004262088640436979}
+{'method': 'mlp', 'budget': 8192, 'split': 'ood', 'n_evals': 8192, 'spurious': 0, 'median_rmse': 0.014887814807699818}
+{'method': 'mlp', 'budget': 32768, 'split': 'test', 'n_evals': 32768, 'spurious': 0, 'median_rmse': 0.003488609502877882}
+{'method': 'mlp', 'budget': 32768, 'split': 'ood', 'n_evals': 32768, 'spurious': 0, 'median_rmse': 0.00873380623398393}

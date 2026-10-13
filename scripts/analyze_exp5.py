@@ -131,10 +131,27 @@ for k, lab, _ in M:
 L.append("")
 
 # --- pole width vs FWHM ------------------------------------------------------------------------
+# The FWHM stored with the reference was read off grid points (window spacing 0.02 Γ, i.e. a ~2-4 %
+# resolution error). Here it is recomputed with the exact solver: bounded maximisation of T near the
+# pole and Brent root-finding of the half-maximum crossings (qscatter.physics.resonances).
+from qscatter.experiments.stress import build_systems  # noqa: E402
+from qscatter.physics.resonances import find_resonances  # noqa: E402
+from qscatter.physics.smatrix import compute_transmission  # noqa: E402
+
+SYS = {s.key: s for s in build_systems()}
 P = []
 for key, m in refs.items():
     poles = np.array([complex(a, b) for a, b in m["poles"]])
+    pot = SYS[key].potential()
+    lo_, hi_ = SYS[key].E_range
     for r in m["res"]:
+        G0 = r["gamma_pole"]
+        win = np.linspace(max(lo_, r["E_peak"] - 20 * G0), min(hi_, r["E_peak"] + 20 * G0), 4001)
+        found = find_resonances(lambda e: compute_transmission(e, pot), win, min_height=0.0, min_prominence=1e-3)
+        if not found:
+            continue
+        f = min(found, key=lambda x: abs(x.E_res - r["E_peak"]))
+        r = dict(r, fwhm=f.fwhm, E_peak=f.E_res, T_peak=f.T_peak)
         if not np.isfinite(r["fwhm"]):
             continue
         Ep = complex(r["E_pole"], -r["gamma_pole"] / 2)
