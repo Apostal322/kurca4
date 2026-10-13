@@ -9,6 +9,7 @@ version = "0.1.0"
 description = "Reproducible 1D quantum scattering research comparing PyTorch surrogate models, AAA rational approximation and adaptive sampling for resonance reconstruction."
 readme = "README.md"
 requires-python = ">=3.10"
+authors = [{name = "Rostislav Pershin"}]
 keywords = ["quantum scattering", "surrogate modeling", "rational approximation", "AAA", "pytorch",
             "adaptive sampling", "resonances", "computational physics"]
 classifiers = [
@@ -26,7 +27,7 @@ dev = ["pytest>=8", "ruff>=0.5"]
 qscatter-quickstart = "qscatter.quickstart:main"
 
 [project.urls]
-Repository = "https://github.com/Apostal322/kurca4"
+Repository = "https://github.com/Apostal322/quantum-scattering-surrogates"
 
 [tool.setuptools.packages.find]
 include = ["qscatter*"]

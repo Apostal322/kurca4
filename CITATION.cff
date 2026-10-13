@@ -6,10 +6,12 @@ message: >-
 type: software
 title: "Quantum Scattering Surrogates: surrogate modeling and adaptive sampling for 1D quantum resonance reconstruction"
 version: 0.1.0
+url: "https://github.com/Apostal322/quantum-scattering-surrogates"
 authors:
-  # TODO(author): replace the alias with your full name (given-names / family-names) before publishing
-  - alias: Apostal322
-repository-code: "https://github.com/Apostal322/kurca4"
+  - family-names: Pershin
+    given-names: Rostislav
+    alias: Apostal322
+repository-code: "https://github.com/Apostal322/quantum-scattering-surrogates"
 abstract: >-
   Reproducible research code comparing classical interpolation, Gaussian processes,
   AAA rational approximation and PyTorch neural-network surrogates, with and without

@@ -2,6 +2,8 @@
 
 *Применение суррогатных моделей для ускорения параметрических расчётов в задаче квантового рассеяния*
 
+**Author:** Rostislav Pershin, undergraduate student in Computational Physics. Coursework project; not peer-reviewed.
+
 English research report (portfolio version). The full coursework text in Russian is
 [`docs/REPORT_RU.md`](REPORT_RU.md). Every number below is produced by a script in `scripts/`; raw results are in
 `results/`; `README.md` lists the commands.
