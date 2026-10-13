@@ -53,6 +53,7 @@ python scripts/recompute_exp4_spurious.py && python scripts/recompute_exp4_spuri
 python scripts/exp4_query_time_aaa.py                                 # per-configuration AAA comparison
 python scripts/run_exp5.py && python scripts/analyze_exp5.py          # Exp. 5 independent stress test (~30 min)
 python scripts/benchmark_cost.py                        # measured wall-clock cost (run on an idle machine)
+python scripts/reproduce_key_results.py                 # recomputes 17 headline numbers of the report (~2 min)
 ```
 
 Every experiment writes its raw rows (JSONL), configuration and figures under `results/expN/`. Seeds are fixed
@@ -69,11 +70,14 @@ Large regenerable reference caches (`results/*/refs/`) are git-ignored.
 | Resonant T(E), **AAA rational approximation of t(k)** | all resonances from **15–30 evaluations** in 65 systems: Γ down to 5·10⁻⁷, asymmetric, doublets, smooth potential, noise |
 | Adaptive sampling for local interpolants | helps, but less, and depends on the phase convention |
 | Parametric (E, V₀, a, d) → t | MLP is best among generic methods (3.5·10⁻³). The **hybrid S-matrix composition** reaches 4.7·10⁻⁶. Per-configuration AAA: 16 evaluations each. |
-| Wall-clock | with a 4.4 ms/call ODE solver: 30 points + AAA is ≈700× faster than a direct 20,001-point scan. With the fast solver: no gain. |
+| Wall-clock | with a 4.4 ms/call ODE solver: 30 points + AAA is 670–700× faster (two runs) than a direct 20,001-point scan. With the fast solver: no gain. |
 
 ## Documents
 
 * [`docs/REPORT_RU.md`](docs/REPORT_RU.md): the coursework report (Russian, 14 sections).
+* [`docs/SUPERVISOR_BRIEF_RU.md`](docs/SUPERVISOR_BRIEF_RU.md): 2-page brief for the scientific supervisor.
+* [`docs/DEFENSE_PREPARATION_RU.md`](docs/DEFENSE_PREPARATION_RU.md): 28 likely defence questions with answers.
+* [`docs/KEY_FIGURES_RU.md`](docs/KEY_FIGURES_RU.md): the 7 key figures and how to explain them.
 * [`docs/REPORT.md`](docs/REPORT.md): English research report, with errata.
 * [`docs/PROVENANCE.md`](docs/PROVENANCE.md): published methods vs our implementation choices vs new findings,
   plus the reference-verification log.

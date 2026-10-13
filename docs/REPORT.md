@@ -68,7 +68,7 @@ An independent audit with 10 checks passes, including a leakage test with a pois
      fits; premature self-certification under 10⁻⁴ noise.
 8. **Cost.**
    - With the slow ODE solver (4.4 ms per call), 30 evaluations + AAA reproduce a 20,001-point scan
-     **≈700× faster** (measured).
+     **670–700× faster** (two independent measurements).
    - With the fast solver, no surrogate is faster than direct computation.
    - MLP training (~20 s) destroys most of the gain.
 
@@ -348,7 +348,7 @@ energies for Stage B.
 | S-matrix | greedy AAA (24) | 24 | 0.004 | 0.058 | 0.003 | 0.005 | 0.070 | 1e-12 | 0.18× |
 | S-matrix | 160 uniform + MLP | 160 | 0.0004 | — | 24.5 | 0.037 | 24.5 | 2.5e-2 | 0.0005× |
 | ODE (DOP853) | direct scan | 20,001 | 89.5 | — | — | — | 89.5 | 9e-12 | 1× |
-| ODE | 30 uniform + AAA | 30 | 0.117 | — | 0.007 | 0.004 | 0.128 | 5e-10 | **≈700×** |
+| ODE | 30 uniform + AAA | 30 | 0.117 | — | 0.007 | 0.004 | 0.128 | 5e-10 | **≈700×** (run 2: 670×) |
 | ODE | greedy AAA (24) | 24 | 0.098 | 0.069 | 0.003 | 0.003 | 0.174 | 9e-12 | ≈510× |
 | ODE | segment(E,t) 160 + PCHIP | 160 | 0.708 | 0.017 | 0.001 | 0.001 | 0.726 | 2e-4 | ≈120× |
 | ODE | 160 uniform + MLP | 160 | 0.66 | — | 22.4 | 0.032 | 23.0 | 2.6e-2 | 3.9× |

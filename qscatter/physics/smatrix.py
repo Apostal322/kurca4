@@ -168,10 +168,12 @@ def transmission_complex_energy(E, potential: PiecewiseConstantPotential) -> np.
     """Analytic continuation t(E) for complex E (k = sqrt(E), principal branch).
 
     The same layer formulas hold for complex E because they are entire in q^2;
-    only the asymptotic k = sqrt(E) carries the branch. With the principal
-    branch, the physical sheet near the positive real axis is reached from
-    Im E < 0 by continuity of Re k > 0, which is where resonance poles
-    E_n = E_r - i Gamma/2 live (Im k < 0). Used only to locate poles exactly.
+    only the asymptotic k = sqrt(E) carries the branch. The physical sheet is
+    Im k > 0 (bound-state poles only). The principal branch is continuous across
+    the positive real E axis, so E = E_r - i eps maps to Re k > 0, Im k < 0: this is
+    the continuation of the physical amplitude through the cut onto the second
+    (unphysical) sheet, where the resonance poles E_n = E_r - i Gamma/2 lie
+    (lower half k-plane). Used only to locate poles exactly.
     """
     E = np.atleast_1d(np.asarray(E, dtype=complex))
     k = np.sqrt(E)

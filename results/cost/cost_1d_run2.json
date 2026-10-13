@@ -1,0 +1,140 @@
+{
+ "rows": [
+  {
+   "solver": "S-matrix (vectorised)",
+   "method": "direct scan (20 001 calls)",
+   "n_calls": 20001,
+   "solver_s": 0.01066928000000189,
+   "acquisition_s": 0.0,
+   "fit_s": 0.0,
+   "inference_s": 0.0,
+   "total_s": 0.01066928000000189,
+   "rmse_T": 0.0,
+   "note": "max|t - t_Smatrix| = 0.0e+00",
+   "speedup_vs_direct_scan": 1.0,
+   "break_even_queries": null
+  },
+  {
+   "solver": "S-matrix (vectorised)",
+   "method": "uniform 30 + AAA(t)",
+   "n_calls": 30,
+   "solver_s": 0.00027814800000669493,
+   "acquisition_s": 0.0,
+   "fit_s": 0.003605007999993859,
+   "inference_s": 0.0064182250000044405,
+   "total_s": 0.010301381000004994,
+   "rmse_T": 2.125373433142283e-11,
+   "speedup_vs_direct_scan": 1.0357135611231851,
+   "break_even_queries": 37.571678378964215
+  },
+  {
+   "solver": "S-matrix (vectorised)",
+   "method": "AAA greedy (self-certified at N=24)",
+   "n_calls": 24,
+   "solver_s": 0.0031719209999891973,
+   "acquisition_s": 0.05032217300004049,
+   "fit_s": 0.001989995000002409,
+   "inference_s": 0.005572929000010163,
+   "total_s": 0.06105701800004226,
+   "rmse_T": 1.1900456655755115e-12,
+   "speedup_vs_direct_scan": 0.1747428936014285,
+   "break_even_queries": 536.6197647544009
+  },
+  {
+   "solver": "S-matrix (vectorised)",
+   "method": "segment(E,t) 160 + PCHIP(t)",
+   "n_calls": 160,
+   "solver_s": 0.018967671000240216,
+   "acquisition_s": 0.006971806000109382,
+   "fit_s": 0.0007355840000116132,
+   "inference_s": 0.0007932119999907172,
+   "total_s": 0.027468273000351928,
+   "rmse_T": 0.00017165986067963567,
+   "speedup_vs_direct_scan": 0.3884219441049386,
+   "break_even_queries": 257.3955398101162
+  },
+  {
+   "solver": "S-matrix (vectorised)",
+   "method": "uniform 160 + MLP(t)",
+   "n_calls": 160,
+   "solver_s": 0.0002636429999824941,
+   "acquisition_s": 0.0,
+   "fit_s": 25.103815007999998,
+   "inference_s": 0.07121186400001989,
+   "total_s": 25.175290515,
+   "rmse_T": 0.024952690772277734,
+   "speedup_vs_direct_scan": 0.00042379967745138415,
+   "break_even_queries": 250755.53999499654
+  },
+  {
+   "solver": "ODE DOP853",
+   "method": "direct scan (20 001 calls)",
+   "n_calls": 20001,
+   "solver_s": 59.39507436500003,
+   "acquisition_s": 0.0,
+   "fit_s": 0.0,
+   "inference_s": 0.0,
+   "total_s": 59.39507436500003,
+   "rmse_T": 8.586705818998e-12,
+   "note": "max|t - t_Smatrix| = 2.8e-10",
+   "speedup_vs_direct_scan": 1.0,
+   "break_even_queries": null
+  },
+  {
+   "solver": "ODE DOP853",
+   "method": "uniform 30 + AAA(t)",
+   "n_calls": 30,
+   "solver_s": 0.0801341099999604,
+   "acquisition_s": 0.0,
+   "fit_s": 0.004065222000008362,
+   "inference_s": 0.004654603999995288,
+   "total_s": 0.08885393599996405,
+   "rmse_T": 5.429916693708373e-10,
+   "speedup_vs_direct_scan": 668.4574374400709,
+   "break_even_queries": 27.625475941384664
+  },
+  {
+   "solver": "ODE DOP853",
+   "method": "AAA greedy (self-certified at N=24)",
+   "n_calls": 24,
+   "solver_s": 0.06480600200018216,
+   "acquisition_s": 0.054560835999836854,
+   "fit_s": 0.0021536929999683707,
+   "inference_s": 0.00311674499999981,
+   "total_s": 0.1246372759999872,
+   "rmse_T": 8.728528532094418e-12,
+   "speedup_vs_direct_scan": 476.54342481783806,
+   "break_even_queries": 39.86941154097248
+  },
+  {
+   "solver": "ODE DOP853",
+   "method": "segment(E,t) 160 + PCHIP(t)",
+   "n_calls": 160,
+   "solver_s": 0.6677652259997444,
+   "acquisition_s": 0.01949280600064185,
+   "fit_s": 0.0008426159999999072,
+   "inference_s": 0.0008416960000090512,
+   "total_s": 0.6889423440003952,
+   "rmse_T": 0.00017165986096626972,
+   "speedup_vs_direct_scan": 86.21196662135483,
+   "break_even_queries": 225.74904763283183
+  },
+  {
+   "solver": "ODE DOP853",
+   "method": "uniform 160 + MLP(t)",
+   "n_calls": 160,
+   "solver_s": 0.6935945129999936,
+   "acquisition_s": 0.0,
+   "fit_s": 21.791966797999976,
+   "inference_s": 0.09637494800000468,
+   "total_s": 22.581936258999974,
+   "rmse_T": 0.025599980327079747,
+   "speedup_vs_direct_scan": 2.6302029057108984,
+   "break_even_queries": 7388.542552672231
+  }
+ ],
+ "per_call": {
+  "S-matrix (vectorised)": 0.00010367416999997659,
+  "ODE DOP853": 0.003048119827500102
+ }
+}

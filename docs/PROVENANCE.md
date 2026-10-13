@@ -53,6 +53,13 @@ This file separates three things that are easy to blur in a report:
 | Segment sampling on t beats segment sampling on T for local interpolants | Exp. 2–3 | Convention-dependent; disappears for phase reference X = 50 |
 | Stationary GPs degrade on multi-scale adaptive designs; MLPs miss narrow peaks even with data (spectral bias) | Exp. 2 | Small models, our protocols |
 | Hybrid S-matrix composition is the most sample-efficient parametric surrogate | Exp. 4 | Requires a known decomposition; 1D |
+| AAA result holds on 27 unseen systems (asymmetric, doublets, smooth potential, noise); limits: under-resolution with many poles, instability only in under-resolved fits, premature self-certification at noise 1e-4 | Exp. 5 | Same scope as above |
+| Pole width vs FWHM: agree to 8e-5 for isolated resonances, deviation ~ (Γ/Λ)², fails for overlapping doublets | Exp. 5, §10.9 | Standard Breit–Wigner/Fano physics; quantified here |
+| Solver-call reduction becomes wall-clock speed-up only with an expensive solver (670–700× with the ODE solver, none with the fast one) | `results/cost/` (two runs) | Single machine, timing spread ~30–50 % |
+
+**Established methods, not ours:** AAA and rational approximation in general, splines, PCHIP, Gaussian processes,
+MLPs, Fourier features, POD, the Redheffer star product. The project contributes a systematic comparison, the
+choice of a physically motivated representation (t as a function of k), measured limits, and cost accounting.
 
 ## 4. Reference verification log
 
