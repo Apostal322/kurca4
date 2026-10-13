@@ -481,5 +481,4 @@ approximation*, SIAM J. Sci. Comput. 40(3), A1494–A1522 (2018).
 }
 ```
 
-**License:** none has been chosen yet, so all rights are reserved by the author. Third-party libraries keep their own
-licenses.
+
