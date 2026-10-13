@@ -112,7 +112,7 @@ def _check_validity(E, potential: PiecewiseConstantPotential):
     if np.any(E <= 0):
         raise ValueError("scattering requires E > 0 (asymptotic potential is 0)")
     for V, d in zip(potential.heights, potential.widths):
-        kappa = np.sqrt(np.maximum(V - E, 0.0))
+        kappa = np.sqrt(np.maximum(np.real(V) - E, 0.0))
         if np.any(kappa * d > MAX_KAPPA_D):
             raise ValueError(
                 f"layer with V={V}, d={d} is too opaque (kappa*d > {MAX_KAPPA_D}); "
@@ -127,7 +127,8 @@ def compute_scattering(E, potential: PiecewiseConstantPotential) -> ScatteringRe
     k = np.sqrt(E)
     S = None
     for V, d in zip(potential.heights, potential.widths):
-        layer = _layer_smatrix(E, k, float(V), float(d))
+        Vc = complex(V) if np.iscomplexobj(V) else float(V)  # complex V = absorbing layer (Im V < 0)
+        layer = _layer_smatrix(E, k, Vc, float(d))
         S = layer if S is None else _star(S, layer)
     r_loc, t_loc, _, _ = S
     xl, xr = potential.x_left, potential.x_right

@@ -17,6 +17,8 @@ Median over seeds (uniform design: classical interpolants are deterministic; GP/
 | Gaussian process | T | 1.6e-05 | 8.9e-07 | 7.7e-07 | 6.2e-07 | 4.3e-07 | 2.6e-07 | 1.7e-07 |
 | MLP (PyTorch) | amplitude | 1.4e-03 | 3.0e-04 | 9.8e-04 | 1.0e-03 | 1.1e-04 | 1.1e-04 | — |
 | MLP (PyTorch) | T | 2.4e-04 | 1.0e-04 | 1.4e-04 | 1.3e-04 | 1.3e-04 | 5.8e-05 | — |
+| Rational (AAA, in k) | amplitude | 7.0e-09 | 1.2e-13 | 4.8e-16 | 3.9e-16 | 5.2e-16 | 5.1e-16 | 5.5e-16 |
+| Rational (AAA, in k) | T | 7.8e-03 | 4.5e-11 | 1.6e-12 | 1.0e-13 | 6.9e-16 | 1.0e-15 | 1.0e-15 |
 
 ## Stage A: single barrier (smooth) — RMSE of T, random design
 
@@ -32,6 +34,8 @@ Median over seeds (uniform design: classical interpolants are deterministic; GP/
 | Gaussian process | T | 1.0e-04 | 2.8e-06 | 9.2e-07 | 6.8e-07 | 4.5e-07 | 2.5e-07 | 1.6e-07 |
 | MLP (PyTorch) | amplitude | 3.4e-03 | 1.4e-03 | 6.5e-04 | 2.3e-04 | 1.1e-04 | 1.1e-04 | — |
 | MLP (PyTorch) | T | 6.7e-04 | 2.5e-04 | 8.1e-05 | 9.7e-05 | 1.3e-04 | 9.7e-05 | — |
+| Rational (AAA, in k) | amplitude | 2.6e-08 | 1.5e-13 | 1.9e-14 | 8.5e-16 | 1.6e-15 | 2.1e-15 | 6.5e-16 |
+| Rational (AAA, in k) | T | 1.0e-04 | 2.8e-11 | 3.0e-12 | 2.5e-15 | 1.3e-15 | 1.9e-15 | 1.3e-15 |
 
 ## Stage B: double barrier (resonant) — RMSE of T, uniform design
 
@@ -47,6 +51,8 @@ Median over seeds (uniform design: classical interpolants are deterministic; GP/
 | Gaussian process | T | 1.6e-01 | 8.4e-02 | 7.3e-02 | 3.8e-02 | 2.5e-02 | 1.7e-02 | 1.4e-02 |
 | MLP (PyTorch) | amplitude | 1.9e-01 | 8.3e-02 | 4.5e-02 | 4.7e-02 | 2.8e-02 | 2.5e-02 | — |
 | MLP (PyTorch) | T | 1.7e-01 | 8.5e-02 | 5.9e-02 | 4.1e-02 | 6.5e-02 | 2.7e-02 | — |
+| Rational (AAA, in k) | amplitude | 1.6e-01 | 1.8e-07 | 3.2e-12 | 1.2e-14 | 1.5e-14 | 2.3e-15 | 2.4e-15 |
+| Rational (AAA, in k) | T | 3.3e+01 | 1.6e-01 | 8.6e-09 | 5.6e-11 | 8.7e-12 | 9.3e-15 | 3.6e-15 |
 
 ## Stage B: double barrier (resonant) — RMSE of T, random design
 
@@ -62,6 +68,8 @@ Median over seeds (uniform design: classical interpolants are deterministic; GP/
 | Gaussian process | T | 1.6e-01 | 1.1e-01 | 1.7e-01 | 8.7e-02 | 3.8e-02 | 2.3e-02 | 2.0e-02 |
 | MLP (PyTorch) | amplitude | 1.4e-01 | 9.6e-02 | 8.4e-02 | 8.1e-02 | 3.2e-02 | 3.1e-02 | — |
 | MLP (PyTorch) | T | 1.8e-01 | 1.2e-01 | 8.6e-02 | 8.1e-02 | 3.3e-02 | 2.8e-02 | — |
+| Rational (AAA, in k) | amplitude | 3.1e-02 | 2.0e-06 | 2.7e-11 | 1.2e-13 | 8.7e-15 | 3.3e-15 | 6.1e-15 |
+| Rational (AAA, in k) | T | 7.9e+00 | 2.3e-02 | 1.3e-06 | 5.8e-11 | 4.3e-12 | 4.9e-13 | 6.1e-14 |
 
 ## Empirical convergence order on Stage A (uniform design)
 
@@ -79,6 +87,8 @@ Slope p of log RMSE_T vs log N (RMSE ∝ N^-p), least squares over N = 20…640 
 | Gaussian process | T | 0.50 |
 | MLP (PyTorch) | amplitude | 0.59 |
 | MLP (PyTorch) | T | 0.17 |
+| Rational (AAA, in k) | amplitude | 1.09 |
+| Rational (AAA, in k) | T | 3.33 |
 
 ## Smallest N (of the tested budgets) reaching an RMSE_T target, uniform design
 
@@ -94,6 +104,8 @@ Slope p of log RMSE_T vs log N (RMSE ∝ N^-p), least squares over N = 20…640 
 | single_barrier | Gaussian process | T | 10 | 10 | 10 |
 | single_barrier | MLP (PyTorch) | amplitude | 10 | 20 | > 320 |
 | single_barrier | MLP (PyTorch) | T | 10 | 10 | 320 |
+| single_barrier | Rational (AAA, in k) | amplitude | 10 | 10 | 10 |
+| single_barrier | Rational (AAA, in k) | T | 10 | 20 | 20 |
 | double_barrier | Linear | amplitude | > 640 | > 640 | > 640 |
 | double_barrier | Linear | T | > 640 | > 640 | > 640 |
 | double_barrier | PCHIP | amplitude | > 640 | > 640 | > 640 |
@@ -104,6 +116,8 @@ Slope p of log RMSE_T vs log N (RMSE ∝ N^-p), least squares over N = 20…640 
 | double_barrier | Gaussian process | T | > 640 | > 640 | > 640 |
 | double_barrier | MLP (PyTorch) | amplitude | > 320 | > 320 | > 320 |
 | double_barrier | MLP (PyTorch) | T | > 320 | > 320 | > 320 |
+| double_barrier | Rational (AAA, in k) | amplitude | 20 | 20 | 20 |
+| double_barrier | Rational (AAA, in k) | T | 40 | 40 | 40 |
 
 ## Stage B resonance reproduction (uniform design, amplitude target, median over seeds)
 
@@ -135,6 +149,11 @@ Detected = surrogate has a peak > 0.5 within ±Γ of the true resonance. Positio
 | MLP (PyTorch) | 80 | 2 | 0 | — | 3.6e-01 | 8.9e-03 | 1.6e-01 | 4.1e-03 | 7.5e-02 | 1.3e-03 |
 | MLP (PyTorch) | 160 | 2 | 0 | — | 4.8e-02 | 1.3e-02 | 3.0e-01 | 4.2e-03 | 4.6e-02 | 1.5e-03 |
 | MLP (PyTorch) | 320 | 2 | 0 | — | 1.1e-01 | 1.4e-02 | 1.1e-01 | 5.2e-03 | 4.0e-02 | 1.2e-03 |
+| Rational (AAA, in k) | 40 | 3 | 0 | 2.3e-03 | 9.3e-06 | 7.4e-05 | 2.8e-07 | 4.0e-08 | 5.2e-12 | 2.4e-14 |
+| Rational (AAA, in k) | 80 | 3 | 0 | 2.3e-03 | 9.3e-06 | 7.4e-05 | 2.8e-07 | 4.0e-08 | 1.8e-14 | 2.0e-15 |
+| Rational (AAA, in k) | 160 | 3 | 0 | 2.3e-03 | 9.3e-06 | 7.4e-05 | 2.8e-07 | 4.0e-08 | 2.4e-14 | 5.9e-16 |
+| Rational (AAA, in k) | 320 | 3 | 0 | 2.3e-03 | 9.3e-06 | 7.4e-05 | 2.8e-07 | 4.0e-08 | 3.8e-15 | 5.6e-17 |
+| Rational (AAA, in k) | 640 | 3 | 0 | 2.3e-03 | 9.3e-06 | 7.4e-05 | 2.8e-07 | 4.0e-08 | 3.9e-15 | 1.8e-16 |
 
 ## Unphysical predictions and cost (all runs)
 
@@ -152,3 +171,5 @@ frac_unphysical = fraction of reference energies with T̂ < −1e-6 or T̂ > 1 +
 | Gaussian process | T | 42/84 | 5.8e-02 | -0.688 | 2.85 | 0.438 | 0.176 |
 | MLP (PyTorch) | amplitude | 12/72 | 4.7e-03 | 4.27e-10 | 2.14 | 17.1 | 0.155 |
 | MLP (PyTorch) | T | 34/72 | 1.4e-01 | -0.0538 | 1.24 | 13.1 | 0.15 |
+| Rational (AAA, in k) | amplitude | 7/84 | 3.5e-03 | 3.84e-07 | 3.83 | 0.00363 | 0.0172 |
+| Rational (AAA, in k) | T | 13/84 | 9.8e-03 | -1.02e+04 | 1.18e+04 | 0.00452 | 0.0228 |

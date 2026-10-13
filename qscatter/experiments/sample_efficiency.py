@@ -108,7 +108,7 @@ def build_tasks(cfg: Exp1Config):
             continue
         # deterministic designs + deterministic classical interpolants need one seed only
         # (the GP on a uniform design is deterministic too: its seed only moves optimizer restarts)
-        deterministic = sampling == "uniform" and method in ("linear", "pchip", "cubic", "gp")
+        deterministic = sampling == "uniform" and method in ("linear", "pchip", "cubic", "gp", "aaa")
         seeds = cfg.seeds[:1] if deterministic else (cfg.mlp_seeds if method == "mlp" else cfg.seeds)
         for seed in seeds:
             tasks.append((name, sampling, seed, N, method, target, cfg))

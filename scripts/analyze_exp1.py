@@ -17,7 +17,7 @@ FIG = D / "figures"
 FIG.mkdir(parents=True, exist_ok=True)
 setup()
 rows = [json.loads(l) for l in (D / "raw_results.jsonl").read_text().splitlines()]
-METHODS = ["linear", "pchip", "cubic", "gp", "mlp"]
+METHODS = ["linear", "pchip", "cubic", "gp", "mlp", "aaa"]
 TITLES = dict(single_barrier="Stage A: single barrier (smooth)", double_barrier="Stage B: double barrier (resonant)")
 
 
@@ -112,7 +112,7 @@ for col, (prob, N) in enumerate((("single_barrier", 10), ("double_barrier", 80))
     axes[0, col].plot(ref.E, ref.T, color="#0b0b0b", lw=1, ls=":", label="exact")
     axes[0, col].plot(ts.E, ts.T, "o", color="#0b0b0b", ms=4, label=f"{N} training points")
     axes[0, col].set(ylabel="T(E)", title=f"{TITLES[prob].split(':')[0]}, N={N} uniform, amplitude target")
-    axes[1, col].set(xlabel="E", ylabel="|T̂ − T|", ylim=(1e-8, 2))
+    axes[1, col].set(xlabel="E", ylabel="|T̂ − T|", ylim=(1e-16, 2))
 axes[0, 0].legend(fontsize=8)
 fig.savefig(FIG / "exp1_examples.png")
 plt.close(fig)
@@ -221,3 +221,32 @@ for m in METHODS:
 lines.append("")
 (D / "summary.md").write_text("\n".join(lines))
 print("\n".join(lines))
+
+# --- confidence intervals over random designs (Task 2) ------------------------------
+rng = np.random.default_rng(0)
+
+
+def boot_ci(v, n_boot=10000):
+    v = np.asarray(v, float)
+    meds = np.median(rng.choice(v, size=(n_boot, v.size), replace=True), axis=1)
+    return np.median(v), np.percentile(meds, 2.5), np.percentile(meds, 97.5)
+
+
+ci = ["# Experiment 1 — random designs: median RMSE_T with 95 % bootstrap CI over seeds", "",
+      "Percentile bootstrap of the median (10 000 resamples). With 5 seeds (3 for the MLP) the intervals are wide; "
+      "they are reported so that differences smaller than the spread are not over-interpreted.", "",
+      "| problem | method | target | N=20 | N=40 | N=160 |", "|---|---|---|---|---|---|"]
+for prob in PROBLEMS:
+    for m in METHODS:
+        for tgt in ("amplitude", "T"):
+            cells = []
+            for N in (20, 40, 160):
+                v = [r["rmse_T"] for r in rows if r["problem"] == prob and r["sampling"] == "random"
+                     and r["method"] == m and r["target"] == tgt and r["N"] == N]
+                if len(v) < 2:
+                    cells.append("—")
+                    continue
+                med, lo, hi = boot_ci(v)
+                cells.append(f"{med:.1e} [{lo:.1e}, {hi:.1e}]")
+            ci.append(f"| {prob} | {METHOD_LABELS[m]} | {tgt} | " + " | ".join(cells) + " |")
+(D / "confidence_intervals.md").write_text("\n".join(ci) + "\n")

@@ -107,7 +107,8 @@ def double_barrier(
     )
     return PiecewiseConstantPotential(
         edges=edges,
-        heights=(float(height_left), float(-well_depth), float(height_right)),
+        heights=(float(height_left), -well_depth if np.iscomplexobj(well_depth) else float(-well_depth),
+                 float(height_right)),
         name="double_barrier",
         params=dict(
             height_left=height_left,

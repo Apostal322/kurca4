@@ -13,8 +13,8 @@ INK2 = "#52514e"
 GRID = "#e4e3df"
 NEUTRAL = "#8a8984"
 
-METHOD_COLORS = dict(linear=SLOTS[0], pchip=SLOTS[1], cubic=SLOTS[2], gp=SLOTS[3], mlp=SLOTS[4])
-METHOD_LABELS = dict(linear="Linear", pchip="PCHIP", cubic="Cubic spline", gp="Gaussian process", mlp="MLP (PyTorch)")
+METHOD_COLORS = dict(linear=SLOTS[0], pchip=SLOTS[1], cubic=SLOTS[2], gp=SLOTS[3], mlp=SLOTS[4], aaa=SLOTS[6])
+METHOD_LABELS = dict(linear="Linear", pchip="PCHIP", cubic="Cubic spline", gp="Gaussian process", mlp="MLP (PyTorch)", aaa="Rational (AAA, in k)")
 STRATEGY_COLORS = dict(uniform=SLOTS[0], random=NEUTRAL, segment_T=SLOTS[1], segment_t=SLOTS[2],
                        gp_std=SLOTS[3], mlp_ensemble=SLOTS[4])
 STRATEGY_LABELS = dict(uniform="Uniform grid", random="Random", segment_T="Adaptive: segment (E, T)",
