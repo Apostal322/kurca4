@@ -31,9 +31,11 @@ Main findings:
    uniformly spaced evaluations miss the narrowest resonance (Γ = 7.5·10⁻³), so RMSE stays
    ≈ 2·10⁻².
 3. **Adaptive sampling.** Sampling driven by the *complex amplitude* t(E) resolves all three
-   resonances and lowers the error by orders of magnitude at equal cost (see §7). The same
-   strategy driven by T(E) alone does worse, because the phase of t carries the resonance
-   signal.
+   resonances with 160 evaluations (RMSE 1.7·10⁻⁴). That is 160× better than a uniform grid of the
+   same size, ~100× better than 640 uniform points, and costs only 20 ms of acquisition time. The
+   same rule driven by T(E) never finds the narrow resonance. The phase of t jumps by π across a
+   resonance and is visible far into its tails, where T ≈ 10⁻³. GP-variance and MLP-ensemble
+   acquisition are 10⁴× more expensive and less effective.
 4. The neural network brings no measurable accuracy advantage over classical methods in 1D. Its
    possible value lies in higher-dimensional parameter spaces, discussed in §9.
 
@@ -384,13 +386,150 @@ is limited by *where* the samples are, not by how it interpolates between them.
 
 ### 6.4 MLP early-stopping ablation
 
-RESULTS_PLACEHOLDER_ABLATION
+Validation-based early stopping is the textbook recipe, but it is questionable for **noise-free**
+data: there is no noise to overfit. With 1–2 validation points it can also stop on Adam's
+oscillations. We therefore repeated the uniform-design MLP runs **without** early stopping: no
+validation split, 20 000 epochs on all N points, 72 runs
+(`results/exp1_mlp_no_es/summary.md`).
+
+| Stage A, amplitude target | N = 10 | 20 | 40 | 80 | 160 | 320 |
+|---|---|---|---|---|---|---|
+| early stopping + refit (default) | 1.4e-3 | 3.0e-4 | **9.8e-4** | **1.0e-3** | 1.1e-4 | 1.1e-4 |
+| fixed 20k epochs | 5.6e-4 | 1.4e-4 | 1.1e-4 | 1.2e-4 | 1.1e-4 | 1.1e-4 |
+
+* **Fixed-length training is never meaningfully worse and is often better.** It removes the
+  non-monotonic dip at N = 40–80. In those runs early stopping fired around epoch 3,400–4,600,
+  and the refit with a correspondingly short cosine schedule ended at training loss ~10⁻⁴ instead
+  of ~5·10⁻⁷. It also removes the Stage-B outlier for the T target at N = 160 (6.5·10⁻² → 2.5·10⁻²).
+* **The plateau remains.** RMSE stays ≈ 1·10⁻⁴ (amplitude) and 6·10⁻⁵ (T) from N = 40 to 320.
+  The MLP's limit is the optimiser, not the data or the stopping rule.
+* None of the conclusions of §6.1–6.3 change. For noise-free surrogate data we would recommend
+  fixed-budget training (or a training-loss tolerance) over validation-based early stopping. The
+  main experiment keeps the protocol that was fixed *before* the results were seen, and this
+  ablation is reported next to it.
 
 ---
 
 ## 7. Experiment 2 — sequential / adaptive sampling
 
-RESULTS_PLACEHOLDER_EXP2
+**Setup.**
+
+* Every strategy starts from the **same 10 uniform points** and then requests new energies from a
+  counting solver wrapper. Acquisition decisions use only previously acquired solver output, never
+  the reference grid.
+* Every design is checkpointed at N ∈ {10, 20, 40, 80, 160, 320} (the MLP ensemble stops at 160
+  because of its cost).
+* Each design is scored with four reconstructions: PCHIP, cubic spline and GP on the amplitude, and
+  the MLP (3 seeds, N = 80, 160).
+* 544 runs (`results/exp2/raw_results.jsonl`). The designs are stored in `results/exp2/designs/`.
+
+| strategy | rule | batch |
+|---|---|---|
+| uniform, random | non-adaptive reference designs (random: 5 seeds) | — |
+| **segment (E, T)** | bisect the interval with the longest segment √(ΔÊ² + ΔT²), Ê = E scaled to [0, 1] | 1 |
+| **segment (E, t)** | same, but in (Ê, Re t, Im t) space: √(ΔÊ² + \|Δt\|²) | 1 |
+| **GP std** | maximise the GP posterior variance of (Re t, Im t) on a 4000-point candidate set; batch filled greedily ("kriging believer") | 5 |
+| **MLP ensemble** | maximise the disagreement (variance) of 4 independently initialised MLPs; deep-ensemble style | 10 |
+
+The segment rules are the default loss of 1D adaptive sampling libraries (e.g. `adaptive`'s
+`Learner1D`). They need no model fit, which makes them deterministic and cheap.
+
+Full tables: [`results/exp2/summary.md`](../results/exp2/summary.md).
+
+### 7.1 Results
+
+![Exp2 PCHIP](../results/exp2/figures/exp2_rmse_pchip.png)
+
+**Stage B (resonant), RMSE of T with a PCHIP reconstruction of t:**
+
+| strategy | N = 40 | N = 80 | N = 160 | N = 320 | resonances found at N = 160 | acquisition time to N_max |
+|---|---|---|---|---|---|---|
+| uniform grid | 5.2e-2 | 4.5e-2 | 2.8e-2 | 1.9e-2 | 2 | — |
+| random (median of 5) | 1.2e-1 | 7.3e-2 | 3.2e-2 | 2.4e-2 | 2.0 | — |
+| segment (E, T) | 6.8e-2 | 2.4e-2 | 2.4e-2 | 2.4e-2 | 2 | 0.02 s |
+| **segment (E, t)** | **2.4e-2** | **2.4e-2** | **1.7e-4** | **3.7e-5** | **3** | **0.02 s** |
+| GP std | 6.6e-2 | 6.8e-2 | 3.2e-2 | 1.8e-2 | 3 | 200 s |
+| MLP ensemble | 7.7e-2 | 2.5e-2 | 2.4e-2 | — | 2 | 390 s |
+
+* **Amplitude-driven adaptive sampling is the single largest improvement in this project.** With
+  **160 evaluations**, segment (E, t) reaches RMSE 1.7·10⁻⁴: 160× below a uniform grid of the
+  same size, and ~100× below a uniform grid of **640** points (1.8·10⁻², §6). It is the only cheap
+  strategy that resolves all three resonances, the 7.5·10⁻³-wide one included. With the cubic
+  spline it reaches 3.8·10⁻⁵ at N = 320, ~500× better than uniform.
+* The acquisition overhead is negligible: 20 ms in total for 310 decisions.
+
+**Why the amplitude works and T does not (Q6).** Up to N = 80 no strategy has a point within ±2Γ
+of E₁. Between N = 80 and N = 160, segment (E, t) goes from 0 to 16 points in that window and
+segment (E, T) stays at 0, even though it holds brackets just as close (±0.07). The reason is the
+resonant phase. The table below gives the exact solver values across a bracket of half-width h
+centred on E₁, compared with the same bracket in the background at E = 2.5:
+
+| h | \|Δt\| across E₁ | \|ΔT\| across E₁ | \|Δt\| background | \|ΔT\| background |
+|---|---|---|---|---|
+| 0.206 | 0.035 | 0.0004 | 0.011 | 0.0003 |
+| 0.069 | 0.107 | 0.0011 | 0.0037 | 0.0001 |
+| 0.020 | 0.359 | 0.0037 | 0.0011 | 0.00003 |
+
+The phase of t rises by ≈ π across a resonance (Fig. §4.2), so t at the two ends of a bracket
+differs strongly even where T ≈ 10⁻³ at both ends. For segment (E, t), |Δt| = 0.11 dominates the
+interval-length term ΔÊ = 0.014, and the bracket is bisected repeatedly, homing in on the
+resonance like a root-finder on the phase jump. For segment (E, T), ΔT = 0.001 ≪ ΔÊ, so the
+bracket looks exactly like the smooth background and the resonance stays hidden. **The complex
+amplitude carries information about a resonance far into its tails, where the observable T does
+not.**
+
+![Designs N=160](../results/exp2/figures/exp2_designs_N160.png)
+
+**Model-based acquisition is weaker here.**
+
+* **GP std** finds E₁ at N = 160, but it places only one point near it (T = 0.67, 0.35Γ from the
+  peak). Its stationary kernel spreads samples almost uniformly, because the posterior variance
+  depends only on the point *locations*, not on the observed values. It therefore behaves like a
+  slightly irregular uniform grid. It is also 10⁴× more expensive than the segment rule.
+* **MLP-ensemble disagreement** concentrates samples on the two resonances it already knows, then
+  stops exploring; it never finds E₁. Like the MLP in §6, the ensemble members are smooth and
+  agree on a flat background, so they never "see" the narrow feature. It is the most expensive
+  strategy (390 s for 150 decisions).
+
+**Stage A (smooth).** Adaptive sampling helps modestly, mainly by placing points where t
+oscillates faster.
+
+| strategy | uniform | segment (E, t) | GP std |
+|---|---|---|---|
+| cubic spline (amplitude), N = 160 | 6.3e-7 | 8.4e-9 | 3.9e-8 |
+| cubic spline (amplitude), N = 320 | 5.7e-8 | 6.9e-10 | 9.5e-9 |
+
+That is up to ~80× at equal N. Note that cubic/T on a uniform grid is already at 2·10⁻¹⁰ for
+N = 160 (§6.1).
+
+### 7.2 Interaction between the design and the reconstruction model
+
+* **Piecewise interpolants profit most from adaptive designs.** PCHIP and the cubic spline are
+  local, so dense clusters at resonances and sparse background points do not interfere.
+* **A stationary GP is hurt by adaptive designs.** On the segment (E, t) designs its RMSE *grows*
+  with N: 0.10 at N = 80, 0.15 at 160, 0.19 at 320. The design is multi-scale (spacing
+  1.4·10⁻⁴ inside resonances, up to 0.28 in the background, at N = 320), but a stationary kernel has only one
+  length scale. The likelihood selects the short one the resonances need; it sits at the lower
+  bound of §5.1. The GP therefore reverts towards its mean between the sparse background points
+  and creates spurious bumps: T̂ = 0.27 at E = 0.24, where T < 10⁻⁵. This is a genuine model
+  limitation, not a tuning problem. Lowering the bound would make it worse. A non-stationary
+  kernel (input warping, or a sum of kernels with different scales) would be the remedy.
+* **The MLP cannot use the information it is given.** Trained on the segment (E, t) design with
+  N = 160, which holds 16 points within ±2Γ of E₁, it still misses those *training* points by
+  up to ΔT = 0.68 after 20 000 epochs. Elsewhere its error is ~0.2 at most. The feature is
+  1.5·10⁻³ wide in normalised input units, and a small MLP learns low-frequency functions
+  first and very slowly learns sharp features ("spectral bias"). So the MLP's Stage-B RMSE stays
+  at 2.4–2.9·10⁻² whatever the design. Fourier-feature inputs or a resonance-aware output layer
+  would be needed.
+
+### 7.3 Answers
+
+* **Q5.** Sequential acquisition helps most when it is driven by the right signal. On the smooth
+  problem the gain is moderate, up to ~80×. On the resonant problem it is decisive.
+* **Q6.** Yes. Amplitude-based adaptive sampling resolves all three resonances with 160
+  evaluations, and gives errors ~100× smaller than 640 uniform evaluations. Uniform, random,
+  T-based, GP-variance and MLP-ensemble designs either miss the narrowest resonance or resolve it
+  poorly at the same budgets.
 
 ---
 
@@ -403,6 +542,8 @@ RESULTS_PLACEHOLDER_EXP2
 | Linear / PCHIP / cubic: fit | ≤ 0.5 ms |
 | GP fit (median; kernel selection + restarts) | 0.4–1 s; ~minutes at N = 640 |
 | MLP fit (2 × up to 20k Adam epochs) | 13–17 s median, up to ~2 min |
+| Acquisition, segment rules (310 decisions) | 0.02 s |
+| Acquisition, GP std (310 decisions) / MLP ensemble (150 decisions) | 200–240 s / 390–440 s |
 | Prediction on 10⁵ energies | interpolants 1–2 ms; MLP 0.15 s; GP 0.2–0.4 s |
 
 **Honest reading of the cost.** For this 1D piecewise-constant problem the exact solver is
@@ -415,8 +556,10 @@ is expensive:
 * realistic cases include radial partial-wave solvers with many ℓ, coupled channels, 3D or
   many-body codes, or experiments.
 
-Break-even with the ODE solver: a cubic spline from 40 points (0.12 s of solves) replaces a
-20 001-point scan (63 s).
+Break-even with the ODE solver:
+
+* A cubic spline from 40 points (0.12 s of solves) replaces a 20 001-point scan (63 s) on Stage A.
+* On Stage B, 160 adaptive evaluations (0.5 s) beat 640 uniform ones by 100× in accuracy.
 
 ---
 
@@ -433,13 +576,18 @@ Break-even with the ODE solver: a cubic spline from 40 points (0.12 s of solves)
    resonant curve it is no better than linear interpolation. It is also 10⁴× more expensive to
    train. This is the expected result for a 1D, noise-free, smooth regression, where piecewise
    polynomials are near-optimal.
-4. **Q5, Q6.** See §7. The decisive factor for resonant observables is **where** the solver is
-   evaluated, not the model class. Acquisition based on the complex amplitude finds narrow
-   resonances that no uniform grid of up to 640 points resolves.
+4. **Q5, Q6.** For resonant observables the decisive factor is **where** the solver is
+   evaluated, not the model class. A model-free bisection rule on the complex amplitude,
+   segment (E, t), finds a resonance narrower than the grid spacing from a bracket where
+   T ≈ 10⁻³. It reaches RMSE 1.7·10⁻⁴ with 160 evaluations. With uniform sampling every method
+   stays at ~2·10⁻² even with 640 evaluations. The best combination found is "amplitude-driven
+   adaptive sampling + a local piecewise-cubic interpolant". Stationary GPs and small MLPs do
+   *not* benefit from such multi-scale designs (§7.2).
 5. **Q7.**
    * Use classical interpolation for 1D smooth observables and cheap solvers.
    * Use adaptive sampling on the amplitude whenever resonances may be narrower than the planned
-     grid spacing.
+     grid spacing. It is cheap, model-free and robust.
+   * Avoid stationary GPs and small MLPs as reconstructors of multi-scale resonant curves.
    * Neural surrogates become attractive when (a) the input is multi-dimensional, e.g.
      T(E; V, b, w) over a potential-parameter space, where splines suffer from the curse of
      dimensionality; (b) one exact evaluation is expensive; and (c) a single amortised model
@@ -456,5 +604,12 @@ Break-even with the ODE solver: a cubic spline from 40 points (0.12 s of solves)
 * **Single-energy inputs.** Resonance-aware models, such as rational or Padé fits, or
   pole-expansion (Breit–Wigner) features, are a natural, physically motivated alternative to
   generic MLPs and GPs.
+* **Adaptive sampling can still miss features.** It cannot find a resonance whose bracket shows
+  no amplitude change. A resonance far narrower than the initial spacing, or one with a
+  vanishing background amplitude, could be missed. A minimum exploration density, or a
+  physics-based estimate of how many quasi-bound levels to expect, would help.
+* **One adaptive run per strategy.** The adaptive designs start from a fixed uniform grid and are
+  deterministic. Robustness to the initial grid (e.g. random 10-point starts) is not yet
+  quantified.
 * **Seed counts.** 3 seeds for the MLP and 5 for random designs. The spread is shown as bands.
   Conclusions are drawn only where the differences are much larger than the spread.

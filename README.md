@@ -44,7 +44,16 @@ python scripts/run_exp1.py --workers 4   # Experiment 1 (resumable; ~1 h on 4 CP
 python scripts/analyze_exp1.py           # -> results/exp1/figures, results/exp1/summary.md
 python scripts/run_exp2.py --workers 4   # Experiment 2 (~30 min)
 python scripts/analyze_exp2.py           # -> results/exp2/figures, results/exp2/summary.md
+python scripts/run_exp1.py --mlp-no-early-stopping && python scripts/analyze_mlp_ablation.py
+python scripts/check_reference_grid.py   # reference-grid convergence of the metrics
 ```
+
+## Key results (details in the report)
+
+| | uniform grid | best |
+|---|---|---|
+| Stage A (smooth), RMSE of T with 10 evaluations | cubic spline of T: 6·10⁻⁵ | GP of T: 1.6·10⁻⁵ (MLP: 2·10⁻⁴) |
+| Stage B (3 resonances), RMSE of T with 160 evaluations | ≈ 2.8·10⁻² for every method (narrowest resonance missed) | amplitude-driven adaptive sampling + PCHIP: **1.7·10⁻⁴**, all 3 resonances |
 
 Everything is deterministic: fixed seeds, `torch.use_deterministic_algorithms(True)`, CPU, float64.
 Units: ħ²/2m = 1, so −ψ'' + Vψ = Eψ and k = √E.

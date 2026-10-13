@@ -8,12 +8,15 @@ import numpy as np
 
 from qscatter.config import PROBLEMS
 from qscatter.data import TrainingSet, reference_solution
+import warnings
+
 from qscatter.plotting import INK2, METHOD_LABELS, STRATEGY_COLORS, STRATEGY_LABELS, setup
 
 D = Path("results/exp2")
 FIG = D / "figures"
 FIG.mkdir(parents=True, exist_ok=True)
 setup()
+warnings.filterwarnings("ignore", category=RuntimeWarning)
 rows = [json.loads(l) for l in (D / "raw_results.jsonl").read_text().splitlines()]
 STRATS = ["uniform", "random", "segment_T", "segment_t", "gp_std", "mlp_ensemble"]
 TITLES = dict(single_barrier="Stage A: single barrier", double_barrier="Stage B: double barrier")
@@ -62,21 +65,21 @@ strat_plot("pchip", "n_detected", "resonances reproduced (of 3)", "exp2_resonanc
 
 # designs: where did each strategy put its points?
 ref = reference_solution(PROBLEMS["double_barrier"])
-N = 80
-fig, axes = plt.subplots(len(STRATS), 1, figsize=(10, 9), sharex=True)
-for ax, s in zip(axes, STRATS):
-    ts = TrainingSet.load(D / "designs" / f"double_barrier_{s}_N{N}_s0")
-    ax.plot(ref.E, ref.T, color=INK2, lw=0.9)
-    ax.plot(ts.E, ts.T, "|", color=STRATEGY_COLORS[s], ms=14, mew=1.5)
-    ax.plot(ts.E, np.full(ts.E.shape, -0.15), "|", color=STRATEGY_COLORS[s], ms=8, mew=1.2)
-    ax.set_ylim(-0.25, 1.1)
-    ax.set_ylabel("T", fontsize=8)
-    ax.text(0.995, 0.85, STRATEGY_LABELS[s], transform=ax.transAxes, ha="right", fontsize=9, color=INK2)
-axes[-1].set_xlabel("E")
-fig.suptitle(f"Stage B: where each strategy spends N = {N} exact evaluations (ticks at the bottom = sampled energies)",
-             y=0.995)
-fig.savefig(FIG / "exp2_designs_N80.png")
-plt.close(fig)
+for N in (80, 160):
+    fig, axes = plt.subplots(len(STRATS), 1, figsize=(10, 9), sharex=True)
+    for ax, s in zip(axes, STRATS):
+        ts = TrainingSet.load(D / "designs" / f"double_barrier_{s}_N{N}_s0")
+        ax.plot(ref.E, ref.T, color=INK2, lw=0.9)
+        ax.plot(ts.E, ts.T, "|", color=STRATEGY_COLORS[s], ms=14, mew=1.5)
+        ax.plot(ts.E, np.full(ts.E.shape, -0.15), "|", color=STRATEGY_COLORS[s], ms=8, mew=1.2)
+        ax.set_ylim(-0.25, 1.1)
+        ax.set_ylabel("T", fontsize=8)
+        ax.text(0.6, 0.8, STRATEGY_LABELS[s], transform=ax.transAxes, ha="center", fontsize=9, color=INK2)
+    axes[-1].set_xlabel("E")
+    fig.suptitle(f"Stage B: where each strategy spends N = {N} exact evaluations "
+                 "(ticks at the bottom = sampled energies)", y=0.93)
+    fig.savefig(FIG / f"exp2_designs_N{N}.png")
+    plt.close(fig)
 
 # --- tables -------------------------------------------------------------------
 fmt = lambda x: "—" if x is None or not np.isfinite(x) else f"{x:.1e}"
