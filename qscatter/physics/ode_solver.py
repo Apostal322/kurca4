@@ -108,3 +108,20 @@ def ode_energy_scan(energies, potential, **kw):
         ts.append(res.t)
         rs.append(res.r)
     return np.array(ts), np.array(rs)
+
+
+def solve_ode_smooth(E: float, V, x_lo: float, x_hi: float, rtol: float = 1e-11, atol: float = 1e-14) -> ODEResult:
+    """Direct integration for a smooth callable V(x) assumed zero outside [x_lo, x_hi].
+
+    Used to validate the staircase (many thin layers) representation of a smooth potential.
+    """
+    k = np.sqrt(E)
+    psi0 = np.exp(1j * k * x_hi)
+    y = np.array([psi0.real, psi0.imag, (1j * k * psi0).real, (1j * k * psi0).imag])
+    rhs = lambda x, u: np.array([u[2], u[3], (V(x) - E) * u[0], (V(x) - E) * u[1]])
+    sol = solve_ivp(rhs, (x_hi, x_lo), y, method="DOP853", rtol=rtol, atol=atol)
+    u = sol.y[:, -1]
+    psi, dpsi = u[0] + 1j * u[1], u[2] + 1j * u[3]
+    A = 0.5 * (psi + dpsi / (1j * k)) * np.exp(-1j * k * x_lo)
+    B = 0.5 * (psi - dpsi / (1j * k)) * np.exp(1j * k * x_lo)
+    return ODEResult(E=E, t=1.0 / A, r=B / A)

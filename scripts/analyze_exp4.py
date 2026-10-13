@@ -107,3 +107,29 @@ for split in ("test", "ood"):
     L.append("")
 (D / "summary.md").write_text("\n".join(L))
 print("\n".join(L))
+
+# --- generalisation vs distance to the nearest training configuration (scan-design methods) -------
+from scipy.stats import spearmanr  # noqa: E402
+
+from qscatter import parametric as pm  # noqa: E402
+
+nn = json.loads((D / "test_nn_distances.json").read_text())
+test_cfgs = pm.test_configs()
+L2 = ["## Error vs distance to the nearest training configuration (held-out test set)", "",
+      "Spearman rank correlation between per-configuration RMSE(T) and the scaled distance to the nearest "
+      "training configuration (positive = error grows with distance). Seed 0.", "",
+      "| method | budget | Spearman ρ | p-value |", "|---|---|---|---|"]
+for key, lab, _ in METHODS:
+    if key in ("tensor_cubic", "hybrid_smatrix"):
+        continue  # tensor / single-barrier designs: different training sets
+    for B in budgets:
+        rs = [r for r in rows if r["method"] == key and r["budget"] == B and r["split"] == "test" and r["seed"] == 0]
+        if not rs or f"{B}_0" not in nn:
+            continue
+        idx = [int(np.argmin(np.linalg.norm(test_cfgs - np.array(r["cfg"]), axis=1))) for r in rs]
+        dist = np.array(nn[f"{B}_0"])[idx]
+        rho, p = spearmanr(dist, [r["rmse_T"] for r in rs])
+        L2.append(f"| {lab} | {B} | {rho:+.2f} | {p:.2g} |")
+with (D / "summary.md").open("a") as fh:
+    fh.write("\n" + "\n".join(L2) + "\n")
+print("\n".join(L2))

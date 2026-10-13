@@ -130,3 +130,28 @@ def free_space(length: float = 1.0) -> PiecewiseConstantPotential:
 def from_layers(widths: Sequence[float], heights: Sequence[float], x0: float = 0.0) -> PiecewiseConstantPotential:
     edges = tuple(float(x0 + s) for s in np.concatenate([[0.0], np.cumsum(widths)]))
     return PiecewiseConstantPotential(edges=edges, heights=tuple(float(h) for h in heights))
+
+
+def asymmetric_double_barrier(VL, aL, d, VR, aR) -> PiecewiseConstantPotential:
+    return double_barrier(VL, aL, d, height_right=VR, width_right=aR)
+
+
+def triple_barrier(V0: float, a_out: float, a_mid: float, d: float, V_mid: float | None = None) -> PiecewiseConstantPotential:
+    """Barrier–well–barrier–well–barrier (two identical coupled wells): resonance doublets."""
+    V_mid = V0 if V_mid is None else V_mid
+    widths = [a_out, d, a_mid, d, a_out]
+    p = from_layers(widths, [V0, 0.0, V_mid, 0.0, V0], x0=-sum(widths) / 2)
+    return PiecewiseConstantPotential(p.edges, p.heights, name="triple_barrier",
+                                      params=dict(V0=V0, a_out=a_out, a_mid=a_mid, d=d, V_mid=V_mid))
+
+
+def gaussian_double_barrier_V(V0: float, c: float, s: float):
+    return lambda x: V0 * (np.exp(-((x - c) ** 2) / (2 * s**2)) + np.exp(-((x + c) ** 2) / (2 * s**2)))
+
+
+def staircase(Vfunc, x_lo: float, x_hi: float, n_layers: int, name="staircase", params=None) -> PiecewiseConstantPotential:
+    """Midpoint staircase approximation of a smooth potential (error O(h^2) in t)."""
+    edges = np.linspace(x_lo, x_hi, n_layers + 1)
+    mids = 0.5 * (edges[1:] + edges[:-1])
+    return PiecewiseConstantPotential(tuple(edges), tuple(float(v) for v in Vfunc(mids)), name=name,
+                                      params=params or {})
