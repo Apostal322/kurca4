@@ -45,6 +45,27 @@ class MLPConfig:
     early_stopping: bool = True
 
 
+def provenance() -> dict:
+    """Library versions, git commit and timestamp for checkpoint metadata."""
+    import datetime
+    import platform
+    import subprocess
+
+    try:
+        commit = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True,
+                                cwd=Path(__file__).resolve().parent).stdout.strip()
+    except Exception:
+        commit = None
+    return dict(torch=torch.__version__, numpy=np.__version__, python=platform.python_version(),
+                git_commit=commit, created=datetime.datetime.now(datetime.timezone.utc).isoformat())
+
+
+def data_hash(E, Y) -> str:
+    import hashlib
+
+    return hashlib.sha256(np.ascontiguousarray(np.column_stack([E, Y]), dtype=np.float64).tobytes()).hexdigest()[:16]
+
+
 def set_determinism(seed: int):
     torch.manual_seed(seed)
     np.random.seed(seed)
@@ -170,12 +191,20 @@ class MLPSurrogate:
         return ys * self.y_std + self.y_mean
 
     # -- persistence --------------------------------------------------------
-    def save(self, path):
+    def save(self, path, meta: dict | None = None):
+        """Save weights + everything needed to reproduce/interpret them.
+
+        ``meta`` (e.g. problem, target, sampling, data hash) is merged with automatic
+        provenance: library versions, git commit, dtype, creation time, training log.
+        """
         path = Path(path)
         path.parent.mkdir(parents=True, exist_ok=True)
         torch.save(
             dict(state=self.model.state_dict(), y_mean=self.y_mean, y_std=self.y_std,
-                 domain=(self.lo, self.hi), config=asdict(self.cfg), n_out=len(self.y_mean)),
+                 domain=(self.lo, self.hi), config=asdict(self.cfg), n_out=len(self.y_mean),
+                 meta={**provenance(), "dtype": "float64", "train_log": dict(
+                     best_epoch=self.log.best_epoch, best_val=self.log.best_val,
+                     final_train_loss=self.log.final_train_loss), **(meta or {})}),
             path,
         )
 

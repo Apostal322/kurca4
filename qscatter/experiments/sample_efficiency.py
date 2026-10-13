@@ -76,7 +76,12 @@ def run_one(task) -> dict:
         extra = dict(best_epoch=model.log.best_epoch, best_val=model.log.best_val,
                      final_train_loss=model.log.final_train_loss)
         if seed == cfg.save_models_seed:
-            model.save(Path(cfg.out_dir) / "models" / f"{name}_{sampling}_N{N}_{target}_s{seed}.pt")
+            from ..surrogates.mlp import data_hash
+
+            model.save(Path(cfg.out_dir) / "models" / f"{name}_{sampling}_N{N}_{target}_s{seed}.pt",
+                       meta=dict(problem=name, sampling=sampling, N=N, target=target, seed=seed,
+                                 potential=P.pot_kwargs, E_range=P.E_range, data_hash=data_hash(ts.E, Y),
+                                 dataset=str(ds_path)))
     else:
         model = make_baseline(method, P.E_range, seed=seed)
         if method == "gp" and N >= 320:
