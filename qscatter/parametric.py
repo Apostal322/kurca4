@@ -110,8 +110,12 @@ def config_metrics(ref, T_hat):
         if w.any() and T_hat[w].max() > 0.5:
             out["n_det"] += 1
             out["pos_err_over_gamma"].append(float(abs(E[w][np.argmax(T_hat[w])] - r["E"]) / r["gamma"]))
-    # spurious peaks: local maxima of T_hat > 0.5 farther than 3 Gamma from every true resonance
-    i = np.where((T_hat[1:-1] > T_hat[:-2]) & (T_hat[1:-1] >= T_hat[2:]) & (T_hat[1:-1] > 0.5))[0] + 1
+    # spurious peaks: peaks of T_hat (prominence > 0.05, height > 0.5) farther than 3 Gamma from every
+    # true resonance. (A first version tested neighbour inequalities and counted flat pairs of nearly
+    # coincident grid points as peaks; results produced with it are not used.)
+    from scipy.signal import find_peaks
+
+    i, _ = find_peaks(T_hat, prominence=0.05, height=0.5)
     out["n_spurious"] = int(sum(all(abs(E[j] - r["E"]) > 3 * r["gamma"] for r in ref["res"]) for j in i))
     return out
 

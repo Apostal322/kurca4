@@ -84,13 +84,13 @@ L = ["# Experiment 4 — parametric surrogate: summary", "",
      "Domain E ∈ [0.2, 5], V₀ ∈ [5, 10], a ∈ [0.3, 0.7], d ∈ [1.5, 3.0]. 40 held-out test configurations "
      "(independent random stream) and 20 out-of-domain configurations, each on a pole-resolved reference grid. "
      "Per run: median and 90th percentile over configurations of the L2 RMSE of T; resonances found / total; "
-     "spurious peaks; median position error of found resonances in units of Γ. Several seeds: median over seeds "
+     "median position error of found resonances in units of Γ. Several seeds: median over seeds "
      "[min–max].", ""]
 for split in ("test", "ood"):
     L += [f"## {'Held-out test configurations' if split == 'test' else 'Out-of-domain configurations'}", "",
-          "| method | budget (evals) | median RMSE(T) | 90th pct RMSE(T) | resonances found | spurious peaks | "
+          "| method | budget (evals) | median RMSE(T) | 90th pct RMSE(T) | resonances found | "
           "pos. err / Γ | frac. unphysical | data gen. [s] | fit [s] | predict [µs/point] | notes |",
-          "|---|---|---|---|---|---|---|---|---|---|---|---|"]
+          "|---|---|---|---|---|---|---|---|---|---|---|"]
     for key, lab, _ in METHODS:
         for B in budgets:
             pr = per_run(key, B, split)
@@ -100,11 +100,30 @@ for split in ("test", "ood"):
             cell = f"{np.median(med):.1e}" + (f" [{min(med):.1e}–{max(med):.1e}]" if len(pr) > 1 else "")
             notes = "; ".join(f"{k}={v:.3g}" if isinstance(v, float) else f"{k}={v}" for k, v in pr[0]["extra"].items())
             L.append(f"| {lab} | {pr[0]['n_evals']} | {cell} | {np.median([p['p90'] for p in pr]):.1e} | "
-                     f"{np.median([p['det'] for p in pr]):.0f}/{pr[0]['nres']} | {np.median([p['spur'] for p in pr]):.0f} | "
+                     f"{np.median([p['det'] for p in pr]):.0f}/{pr[0]['nres']} | "
                      f"{np.nanmedian([p['pos'] for p in pr]):.2g} | {np.median([p['unphys'] for p in pr]):.1e} | "
                      f"{np.median([p['gen'] for p in pr]):.3g} | {np.median([p['fit'] for p in pr]):.3g} | "
                      f"{np.median([p['pred'] for p in pr]) * 1e6:.3g} | {notes} |")
     L.append("")
+# corrected spurious-peak metric (the in-run metric counted flat pairs of near-coincident grid points)
+L += ["## Spurious peaks (corrected metric)", "",
+      "The spurious-peak count logged during the run was wrong (flat pairs of nearly coincident points of the "
+      "composite reference grid were counted as maxima) and is withdrawn. Corrected count = peaks of T̂ with "
+      "prominence > 0.05 and height > 0.5 farther than 3Γ from every true resonance, summed over the 40 test "
+      "(20 OOD) configurations. Recomputed for the deterministic methods and for the plain MLP (seed 0, retrained "
+      "deterministically); RMSE values reproduce the logged ones exactly.", "",
+      "| method | budget | test: spurious / median RMSE | OOD: spurious / median RMSE |", "|---|---|---|---|"]
+rec = []
+for f in ("spurious_recomputed.json", "spurious_recomputed_mlp.json"):
+    if (D / f).exists():
+        rec += json.loads((D / f).read_text())
+for m in dict.fromkeys(r["method"] for r in rec):
+    for B in budgets:
+        t = [r for r in rec if r["method"] == m and r["budget"] == B]
+        if len(t) == 2:
+            a, b = (next(r for r in t if r["split"] == s_) for s_ in ("test", "ood"))
+            L.append(f"| {m} | {a['n_evals']} | {a['spurious']} / {a['median_rmse']:.1e} | {b['spurious']} / {b['median_rmse']:.1e} |")
+L.append("")
 (D / "summary.md").write_text("\n".join(L))
 print("\n".join(L))
 
