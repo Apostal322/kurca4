@@ -3,6 +3,7 @@
 Fast (~1-2 min, CPU). Each line: quantity, value stated in the report, recomputed value, PASS/FAIL
 (relative agreement within the stated rounding, or order of magnitude for values near round-off).
 """
+import sys
 import warnings
 
 import numpy as np
@@ -72,3 +73,4 @@ with open("results/reproduction_check.md", "w") as fh:
              "| quantity | stated in report | recomputed | status |\n|---|---|---|---|\n")
     for n, s, val, ok in rows:
         fh.write(f"| {n} | {s:.4g} | {val:.4g} | {'PASS' if ok else 'FAIL'} |\n")
+sys.exit(1 if n_fail else 0)
